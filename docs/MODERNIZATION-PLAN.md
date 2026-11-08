@@ -10,7 +10,7 @@
 | T3 | 🔒 مراجعة أمنية للـ API وإصلاح الثغرات + اختبارات صلاحيات إضافية | ✅ |
 | T4 | 🔬 تحليل ساكن (Larastan) + رفع تغطية الاختبارات | ✅ |
 | T5 | 🎨 الواجهة: ESLint + Prettier + typecheck + اختبارات مكوّنات | 🔄 |
-| T6 | 📚 توثيق: README, CONTRIBUTING, SECURITY, CHANGELOG | ⬜ |
+| T6 | 📚 توثيق: README, CONTRIBUTING, SECURITY, CHANGELOG | ✅ |
 | T7 | 📄 تقرير المشروع العربي الشامل (HTML) | ✅ |
 | T8 | 📈 تحديث PROGRESS / TRACEABILITY / TASK-TRACKER | ⬜ |
 

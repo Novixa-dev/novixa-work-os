@@ -1,5 +1,9 @@
 # Novixa WorkOS (منظومة إدارة أعمال نوڤيكسا)
 
+[![CI](https://github.com/Novixa-dev/novixa-work-os/actions/workflows/ci.yml/badge.svg)](https://github.com/Novixa-dev/novixa-work-os/actions/workflows/ci.yml)
+
+> 📄 **التقرير العربي الشامل:** [`docs/PROJECT-REPORT.ar.html`](docs/PROJECT-REPORT.ar.html) — افتحه في المتصفح (ميزات، تشغيل، اختبار يدوي، أمان).
+
 > **Engineered for Growth • نبني التقنية التي تجعل أعمالك أقوى**  
 > A private, bilingual, high-density internal operations workspace built for **Novixa** (نوڤيكسا للبرمجيات والحلول الرقمية).
 
@@ -25,7 +29,7 @@ Built as an authenticated, single-workspace modular monolith, it eliminates disc
 
 ## 2. Technical Stack
 
-* **Frontend:** [Nuxt 4](https://nuxt.com/) (Vue 3, TypeScript strict mode, Vite, Pinia, Tailwind CSS).
+* **Frontend:** [Nuxt 3](https://nuxt.com/) (Vue 3, TypeScript strict mode, Vite, Pinia, Tailwind CSS).
 * **Backend:** [Laravel](https://laravel.com/) (PHP 8.4) modular monolith REST API.
 * **Authentication:** First-party cookie session authentication via [Laravel Sanctum](https://laravel.com/docs/sanctum) SPA flow.
 * **Database:** Dual-engine architecture:
@@ -40,7 +44,7 @@ Built as an authenticated, single-workspace modular monolith, it eliminates disc
 
 ### Prerequisites
 - Node.js `v20+` or `v24+` (pnpm or npm)
-- PHP `8.3+` or `8.4+` with extensions: `pdo_sqlite`, `pdo_pgsql`, `intl`, `mbstring`, `fileinfo`
+- PHP `8.4.1+` with extensions: `pdo_sqlite`, `pdo_pgsql`, `intl`, `mbstring`, `fileinfo`
 - Composer `2.8+`
 
 ### One-Command Setup
@@ -66,6 +70,15 @@ pnpm dev
 ```
 
 Visit `http://localhost:3000` to access the application.
+
+---
+
+### Quality gates
+```bash
+cd apps/api && composer lint && composer analyse && php artisan test
+pnpm typecheck:web && pnpm test:web && pnpm build:web
+```
+See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [CHANGELOG.md](CHANGELOG.md) and the plan in [`docs/MODERNIZATION-PLAN.md`](docs/MODERNIZATION-PLAN.md).
 
 ---
 
