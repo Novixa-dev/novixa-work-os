@@ -5,8 +5,8 @@
 
 | # | المهمة | الحالة |
 |---|--------|:------:|
-| T1 | 🧹 نظافة المستودع: حذف الملفات المكررة، تنسيق PHP (Pint)، `.editorconfig`، تثبيت PHP ^8.4 | 🔄 |
-| T2 | 🤖 CI عبر GitHub Actions (API + Web) + Dependabot + قوالب PR/Issues | ⬜ |
+| T1 | 🧹 نظافة المستودع: حذف الملفات المكررة، تنسيق PHP (Pint)، `.editorconfig`، تثبيت PHP ^8.4 | ✅ |
+| T2 | 🤖 CI عبر GitHub Actions (API + Web) + Dependabot + قوالب PR/Issues | ✅ |
 | T3 | 🔒 مراجعة أمنية للـ API وإصلاح الثغرات + اختبارات صلاحيات إضافية | ⬜ |
 | T4 | 🔬 تحليل ساكن (Larastan) + رفع تغطية الاختبارات | ⬜ |
 | T5 | 🎨 الواجهة: ESLint + Prettier + typecheck + اختبارات مكوّنات | ⬜ |
