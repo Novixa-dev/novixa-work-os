@@ -1,0 +1,53 @@
+# Environments and Secrets
+.env
+.env.backup
+.env.production
+*.env.local
+
+# Dependencies
+node_modules/
+vendor/
+.pnpm-store/
+
+# Build artifacts
+.nuxt/
+.output/
+dist/
+build/
+*.tsbuildinfo
+
+# Laravel storage & cache
+apps/api/storage/*.key
+apps/api/storage/oauth-*.key
+apps/api/storage/logs/*.log
+apps/api/storage/framework/cache/*
+apps/api/storage/framework/sessions/*
+apps/api/storage/framework/views/*
+apps/api/storage/app/private/*
+apps/api/storage/app/public/*
+!apps/api/storage/framework/cache/.gitignore
+!apps/api/storage/framework/sessions/.gitignore
+!apps/api/storage/framework/views/.gitignore
+!apps/api/storage/logs/.gitignore
+
+# SQLite databases (keep gitkeep/empty)
+*.sqlite
+*.sqlite-journal
+database/*.sqlite
+
+# Testing & Coverage
+.phpunit.result.cache
+coverage/
+playwright-report/
+test-results/
+
+# IDE & OS
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
