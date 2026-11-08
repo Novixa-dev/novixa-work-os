@@ -1,0 +1,32 @@
+{
+  "name": "novixa-work-os",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Novixa WorkOS — Internal Business Operating System",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "build:web": "pnpm --filter web build",
+    "test:web": "pnpm --filter web test",
+    "lint:web": "pnpm --filter web lint",
+    "typecheck:web": "pnpm --filter web typecheck",
+    "test:api": "cd apps/api && php artisan test",
+    "migrate:api": "cd apps/api && php artisan migrate",
+    "seed:api": "cd apps/api && php artisan db:seed",
+    "setup": "powershell -ExecutionPolicy Bypass -File ./scripts/setup.ps1"
+  },
+  "keywords": [
+    "novixa",
+    "workos",
+    "management",
+    "nuxt",
+    "laravel"
+  ],
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "vue-demi"
+    ]
+  },
+  "author": "Novixa <info@novixa.dev>",
+  "license": "UNLICENSED"
+}

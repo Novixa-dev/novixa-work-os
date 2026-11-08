@@ -6,12 +6,18 @@
 
 # Dependencies
 node_modules/
+**/node_modules/
 vendor/
+**/vendor/
 .pnpm-store/
 
 # Build artifacts
 .nuxt/
+**/.nuxt/
 .output/
+**/.output/
+.nitro/
+**/.nitro/
 dist/
 build/
 *.tsbuildinfo
