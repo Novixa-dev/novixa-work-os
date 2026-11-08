@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>التقرير الشامل — منظومة نوڤيكسا WorkOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f8fc; --surface:#ffffff; --ink:#0f172a; --muted:#475569; --line:#e2e8f0;
+    --brand:#1d4ed8; --brand-2:#0d9488; --accent:#f59e0b; --ok:#059669; --warn:#d97706; --bad:#e11d48;
+    --code-bg:#0f172a; --code-ink:#e2e8f0; --shadow:0 10px 30px -12px rgba(15,23,42,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0b1220; --surface:#111a2e; --ink:#e8eefc; --muted:#9fb0cf; --line:#223052; --shadow:0 10px 30px -12px rgba(0,0,0,.6); }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Cairo",system-ui,"Segoe UI",Tahoma,sans-serif;line-height:1.85;font-size:16px}
+  a{color:var(--brand)}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+  .skip{position:absolute;inset-inline-start:-9999px;top:8px;background:var(--brand);color:#fff;padding:8px 14px;border-radius:8px;z-index:50}
+  .skip:focus{inset-inline-start:12px}
+
+  header.hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 55%,#0d9488 120%);color:#fff;padding:64px 20px 90px;position:relative;overflow:hidden}
+  header.hero::after{content:"";position:absolute;inset:auto -10% -120px auto;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.35),transparent 65%)}
+  .wrap{max-width:1120px;margin-inline:auto;padding-inline:20px;position:relative;z-index:1}
+  .hero .tag{display:inline-block;background:rgba(255,255,255,.14);padding:4px 14px;border-radius:999px;font-size:14px;margin-bottom:16px}
+  .hero h1{font-size:clamp(28px,5vw,48px);line-height:1.3;margin:0 0 12px;font-weight:800}
+  .hero p{max-width:720px;margin:0;color:#dbe7ff;font-size:18px}
+  .hero .meta{margin-top:24px;display:flex;flex-wrap:wrap;gap:10px}
+  .chip{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);padding:4px 14px;border-radius:999px;font-size:14px}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:-52px;position:relative;z-index:2}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);text-align:center}
+  .stat b{display:block;font-size:34px;color:var(--brand);line-height:1.2}
+  .stat span{color:var(--muted);font-size:14px}
+
+  nav.toc{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:28px 0;box-shadow:var(--shadow)}
+  nav.toc h2{margin:0 0 8px;font-size:18px}
+  nav.toc ol{margin:0;padding-inline-start:22px;columns:2 260px;column-gap:28px}
+  nav.toc li{margin:2px 0}
+
+  section{margin:44px 0}
+  section>h2{font-size:28px;margin:0 0 6px;display:flex;align-items:center;gap:10px}
+  section>h2 .n{background:var(--brand);color:#fff;border-radius:10px;min-width:38px;height:38px;display:inline-grid;place-items:center;font-size:18px}
+  .lead{color:var(--muted);margin:0 0 18px}
+  h3{font-size:20px;margin:26px 0 8px}
+
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+  .card h4{margin:0 0 6px;font-size:17px}
+  .card p{margin:0;color:var(--muted);font-size:15px}
+  .card .ic{font-size:26px;display:block;margin-bottom:6px}
+
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:15px}
+  th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:start;vertical-align:top}
+  thead th{background:var(--brand);color:#fff;font-weight:700}
+  tbody tr:nth-child(even){background:color-mix(in srgb,var(--line) 35%,transparent)}
+  .tw{overflow-x:auto;border-radius:14px}
+  td.c,th.c{text-align:center}
+
+  code{direction:ltr;unicode-bidi:embed;background:color-mix(in srgb,var(--brand) 12%,transparent);padding:1px 7px;border-radius:6px;font-size:.92em;font-family:ui-monospace,Consolas,monospace}
+  pre{direction:ltr;text-align:left;background:var(--code-bg);color:var(--code-ink);padding:16px 18px;border-radius:14px;overflow-x:auto;font-size:14px;line-height:1.7;box-shadow:var(--shadow)}
+  pre code{background:none;padding:0;color:inherit}
+
+  .callout{border-inline-start:5px solid var(--brand);background:var(--surface);border-radius:12px;padding:14px 18px;margin:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);border-inline-end:1px solid var(--line)}
+  .callout.warn{border-inline-start-color:var(--warn)} .callout.ok{border-inline-start-color:var(--ok)} .callout.bad{border-inline-start-color:var(--bad)}
+  .badge{display:inline-block;padding:1px 10px;border-radius:999px;font-size:13px;font-weight:700}
+  .b-ok{background:#d1fae5;color:#065f46}.b-warn{background:#fef3c7;color:#92400e}.b-info{background:#dbeafe;color:#1e40af}
+  @media (prefers-color-scheme: dark){.b-ok{background:#064e3b;color:#a7f3d0}.b-warn{background:#78350f;color:#fde68a}.b-info{background:#1e3a8a;color:#bfdbfe}}
+
+  .steps{counter-reset:s;list-style:none;padding:0;margin:0}
+  .steps li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 18px 14px 18px;margin:10px 0;position:relative;padding-inline-start:64px}
+  .steps li::before{content:counter(s);position:absolute;inset-inline-start:16px;top:12px;width:36px;height:36px;border-radius:50%;background:var(--brand-2);color:#fff;display:grid;place-items:center;font-weight:800}
+
+  .check{list-style:none;padding:0;margin:0}
+  .check li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:8px 0;display:flex;gap:10px;align-items:flex-start}
+  .check input{margin-top:7px;width:18px;height:18px;accent-color:var(--brand-2);flex:none}
+  .check label{cursor:pointer;flex:1}
+
+  .arch{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-items:stretch}
+  .node{background:var(--surface);border:2px solid var(--brand);border-radius:14px;padding:14px;text-align:center}
+  .node.g{border-color:var(--brand-2)} .node.a{border-color:var(--accent)}
+  .node small{display:block;color:var(--muted)}
+
+  footer{margin:60px 0 30px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);text-align:center;font-size:14px}
+  .printbtn{position:fixed;inset-inline-end:16px;bottom:16px;background:var(--brand);color:#fff;border:0;border-radius:999px;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer;box-shadow:var(--shadow);z-index:20}
+  @media print{ .printbtn,nav.toc{display:none} body{background:#fff;color:#000} header.hero{background:#1e3a8a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact} section{break-inside:avoid-page} .card,.stat{box-shadow:none} }
+  @media (max-width:600px){ .steps li{padding-inline-start:58px} }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+<button class="printbtn" onclick="window.print()" aria-label="طباعة التقرير أو حفظه PDF">🖨️ طباعة / PDF</button>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">تقرير شامل · الإصدار 1.0 · نوفمبر 2026</span>
+    <h1>منظومة نوڤيكسا WorkOS<br>نظام التشغيل الداخلي لإدارة الأعمال</h1>
+    <p>مساحة عمل خاصة وثنائية اللغة (عربي أولاً) تربط المهام والمشاريع والمنتجات والعملاء والمعرفة في نظام واحد آمن وسريع — مصمّمة لشركة نوڤيكسا للبرمجيات والحلول الرقمية.</p>
+    <div class="meta">
+      <span class="chip">Laravel 13 · PHP 8.4</span>
+      <span class="chip">Nuxt 3 · Vue 3 · TypeScript</span>
+      <span class="chip">Sanctum · RBAC</span>
+      <span class="chip">RTL / LTR</span>
+      <span class="chip">Docker · Nginx · PostgreSQL</span>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+
+  <div class="stats" role="list" aria-label="مؤشرات المشروع">
+    <div class="stat" role="listitem"><b>8</b><span>وحدات وظيفية</span></div>
+    <div class="stat" role="listitem"><b>5</b><span>أدوار وصلاحيات</span></div>
+    <div class="stat" role="listitem"><b>28</b><span>جدول قاعدة بيانات</span></div>
+    <div class="stat" role="listitem"><b>20</b><span>اختبار API ناجح</span></div>
+    <div class="stat" role="listitem"><b>0</b><span>أخطاء PHPStan / vue-tsc</span></div>
+  </div>
+
+  <nav class="toc" aria-label="فهرس التقرير">
+    <h2>📑 الفهرس</h2>
+    <ol>
+      <li><a href="#overview">نظرة عامة والهدف</a></li>
+      <li><a href="#features">الميزات والوحدات</a></li>
+      <li><a href="#usecases">حالات الاستخدام</a></li>
+      <li><a href="#roles">الأدوار والصلاحيات</a></li>
+      <li><a href="#arch">المعمارية والتقنيات</a></li>
+      <li><a href="#api">واجهة API</a></li>
+      <li><a href="#run">التشغيل خطوة بخطوة</a></li>
+      <li><a href="#manual">دليل الاختبار اليدوي</a></li>
+      <li><a href="#auto">الاختبارات الآلية وبوابات الجودة</a></li>
+      <li><a href="#security">الأمان</a></li>
+      <li><a href="#done">ما أُنجز في جولة التحسين</a></li>
+      <li><a href="#limits">القيود المعروفة والخطوات التالية</a></li>
+      <li><a href="#files">خريطة الملفات والوثائق</a></li>
+    </ol>
+  </nav>
+
+  <section id="overview">
+    <h2><span class="n">1</span> نظرة عامة والهدف</h2>
+    <p class="lead">يستبدل النظام الجداول المبعثرة والاشتراكات المتعددة بمساحة عمل واحدة تخص الشركة فقط (Single Workspace).</p>
+    <div class="grid">
+      <div class="card"><span class="ic">🎯</span><h4>المشكلة</h4><p>تشتّت المهام والعملاء والمعرفة بين أدوات متفرقة، وضعف في دعم العربية وRTL.</p></div>
+      <div class="card"><span class="ic">💡</span><h4>الحل</h4><p>نظام ويب داخلي يربط التنفيذ اليومي بالمشاريع والمنتجات وعلاقات العملاء مع سجل تدقيق كامل.</p></div>
+      <div class="card"><span class="ic">🚫</span><h4>خارج النطاق (MVP)</h4><p>المحاسبة، الرواتب، الحضور، الفوترة، بوابة العملاء العامة، بديل الدردشة، ذكاء اصطناعي مستقل.</p></div>
+    </div>
+  </section>
+
+  <section id="features">
+    <h2><span class="n">2</span> الميزات والوحدات</h2>
+    <p class="lead">كل عنصر ظاهر في الواجهة مرتبط بنقطة API حقيقية ومحمي بصلاحيات من جهة الخادم.</p>
+    <div class="grid">
+      <div class="card"><span class="ic">📊</span><h4>لوحة التحكم</h4><p>مؤشرات حيّة، المهام المتأخرة، «يومي»، تقدم المشاريع النشطة، متابعات العملاء، وآخر النشاطات.</p></div>
+      <div class="card"><span class="ic">✅</span><h4>عملي (My Work)</h4><p>يومي، مهامي، المتأخرة، المُسندة من قبلي — لتركيز شخصي سريع.</p></div>
+      <div class="card"><span class="ic">🗂️</span><h4>المهام</h4><p>عرض قائمة وكانبان، فلاتر، مهام فرعية، اعتماديات مع منع الدوران، تعليقات، ومرفقات خاصة.</p></div>
+      <div class="card"><span class="ic">🚀</span><h4>المشاريع</h4><p>دورة حياة المشروع، مسؤول، مراحل (Milestones)، تقدم محسوب تلقائياً من المهام، أرشفة.</p></div>
+      <div class="card"><span class="ic">📦</span><h4>المنتجات</h4><p>كتالوج منتجات نوڤيكسا (عقار، مُهاجم، Serve، Kitchen-POS) مع الأعمال المرتبطة.</p></div>
+      <div class="card"><span class="ic">🤝</span><h4>العملاء وCRM</h4><p>عملاء وجهات اتصال، سجل تفاعلات، متابعات، فرص بيع وتحويل الصفقة الرابحة إلى مشروع تسليم.</p></div>
+      <div class="card"><span class="ic">📚</span><h4>قاعدة المعرفة</h4><p>إجراءات تشغيل (SOP)، سجلات معمارية، أدلة تشغيل، وتهيئة الموظفين الجدد.</p></div>
+      <div class="card"><span class="ic">⚙️</span><h4>الإعدادات والفريق</h4><p>إدارة المستخدمين والأدوار، إعدادات المساحة، التفضيلات، الثيم واللغة والمنطقة الزمنية.</p></div>
+    </div>
+    <h3>مزايا عابرة للوحدات</h3>
+    <div class="grid">
+      <div class="card"><span class="ic">⌨️</span><h4>لوحة الأوامر</h4><p><code>Ctrl+K</code> بحث شامل في المهام والمشاريع والمنتجات والعملاء والمعرفة بحسب الصلاحية.</p></div>
+      <div class="card"><span class="ic">🔔</span><h4>الإشعارات</h4><p>درج إشعارات مع تعليم كمقروء وتعليم الكل.</p></div>
+      <div class="card"><span class="ic">🌗</span><h4>ثنائي اللغة والثيم</h4><p>عربي RTL افتراضي وإنجليزي LTR، وضع داكن/فاتح، خطوط عربية مناسبة.</p></div>
+      <div class="card"><span class="ic">🧾</span><h4>سجل التدقيق</h4><p>تسجيل الدخول/الخروج، الرفع والتنزيل، التغييرات الحساسة.</p></div>
+    </div>
+  </section>
+
+  <section id="usecases">
+    <h2><span class="n">3</span> حالات الاستخدام</h2>
+    <div class="tw"><table>
+      <thead><tr><th>الدور</th><th>السيناريو</th><th>النتيجة</th></tr></thead>
+      <tbody>
+        <tr><td>عضو فريق</td><td>يفتح «يومي» صباحاً، يغيّر حالة مهمة، يضيف تعليقاً ومرفقاً.</td><td>تتحدّث نسبة تقدّم المشروع تلقائياً ويُسجَّل النشاط.</td></tr>
+        <tr><td>مدير مشاريع</td><td>ينشئ مشروعاً بمراحل، ويسند مهاماً ويربط اعتماديات.</td><td>يمنع النظام الاعتماديات الدائرية.</td></tr>
+        <tr><td>مدير مبيعات</td><td>يسجّل اجتماعاً مع عميل ويحدد متابعة، ثم ينقل الفرصة إلى «رابحة» ويحوّلها إلى مشروع.</td><td>مشروع تسليم مرتبط بالعميل والفرصة.</td></tr>
+        <tr><td>مدير النظام</td><td>يضيف مستخدماً، يعطّل حساباً، يعدّل إعدادات المساحة.</td><td>تُطبَّق الصلاحيات فوراً ويُدوَّن التدقيق.</td></tr>
+        <tr><td>ضيف (عميل)</td><td>يدخل ليرى مهام مشروعه فقط.</td><td>لا يصل إلى CRM ولا إلى بيانات غير مُسندة إليه (403).</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="roles">
+    <h2><span class="n">4</span> الأدوار والصلاحيات</h2>
+    <p class="lead">تُنفَّذ الصلاحيات عبر Laravel Policies بمبدأ «الرفض افتراضياً»؛ إخفاء الأزرار ليس حماية.</p>
+    <div class="tw"><table>
+      <thead><tr><th>الدور</th><th>الوصف</th><th>حساب التجربة</th></tr></thead>
+      <tbody>
+        <tr><td><b>owner</b> المالك</td><td>وصول كامل وإدارة المساحة والمستخدمين.</td><td><code>ahmed@novixa.dev</code></td></tr>
+        <tr><td><b>admin</b> مدير النظام</td><td>إدارة المستخدمين والإعدادات وكل المشاريع.</td><td><code>sara@novixa.dev</code></td></tr>
+        <tr><td><b>manager</b> مدير</td><td>المشاريع والعملاء والفرص والمهام.</td><td><code>tariq@novixa.dev</code></td></tr>
+        <tr><td><b>member</b> عضو</td><td>المهام والتعليقات والمعرفة؛ قراءة المنتجات.</td><td><code>omar@novixa.dev</code> · <code>fatima@novixa.dev</code></td></tr>
+        <tr><td><b>guest</b> ضيف</td><td>قراءة محدودة لما أُسند إليه فقط.</td><td><code>saeed@darhadramout.com</code></td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout warn"><b>⚠️ كلمة المرور في بيانات التجربة:</b> <code>password123</code> لجميع الحسابات — للتطوير فقط. غيّرها قبل أي نشر حقيقي.</div>
+  </section>
+
+  <section id="arch">
+    <h2><span class="n">5</span> المعمارية والتقنيات</h2>
+    <p class="lead">Modular Monolith: تطبيق واحد بحدود نطاق واضحة (Identity · Work · Projects · Products · CRM · Knowledge · Notify · Shared).</p>
+    <div class="arch" aria-label="مخطط المعمارية">
+      <div class="node">المتصفح<small>Nuxt SPA · Pinia · Tailwind</small></div>
+      <div class="node a">Nginx<small>TLS · Security Headers</small></div>
+      <div class="node g">Laravel API<small>Sanctum · Policies · Resources</small></div>
+      <div class="node">PostgreSQL 16<small>SQLite محلياً/للاختبار</small></div>
+    </div>
+    <div class="tw" style="margin-top:16px"><table>
+      <thead><tr><th>الطبقة</th><th>التقنية</th><th>ملاحظة</th></tr></thead>
+      <tbody>
+        <tr><td>الواجهة</td><td>Nuxt 3.21 · Vue 3.5 · TypeScript strict</td><td>الوثائق تذكر Nuxt 4؛ المثبّت فعلياً 3.x — الترقية بند لاحق.</td></tr>
+        <tr><td>الخادم</td><td>Laravel 13 · PHP 8.4</td><td>ملفات <code>composer.lock</code> تتطلب PHP ≥ 8.4.1.</td></tr>
+        <tr><td>المصادقة</td><td>Laravel Sanctum</td><td>رموز تنتهي بعد 480 دقيقة افتراضياً.</td></tr>
+        <tr><td>الاختبار</td><td>PHPUnit · Vitest · Larastan · vue-tsc · Pint</td><td>مُفعّلة في CI.</td></tr>
+        <tr><td>التسليم</td><td>Docker Compose · Nginx · GitHub Actions</td><td>سكربتات نسخ احتياطي/استعادة في <code>scripts/</code>.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="api">
+    <h2><span class="n">6</span> واجهة API</h2>
+    <p class="lead">البادئة <code>/api/v1</code> — الردود JSON عبر API Resources.</p>
+    <div class="tw"><table>
+      <thead><tr><th>المجال</th><th>أبرز النقاط</th></tr></thead>
+      <tbody>
+        <tr><td>الهوية</td><td><code>POST auth/login</code> · <code>POST auth/logout</code> · <code>GET auth/me</code> · <code>PATCH auth/preferences</code> · <code>apiResource users</code></td></tr>
+        <tr><td>المهام</td><td><code>apiResource tasks</code> · <code>GET tasks/my-work</code> · <code>PATCH tasks/{id}/status</code> · <code>/my-day</code> · dependencies · comments · attachments</td></tr>
+        <tr><td>المشاريع</td><td><code>apiResource projects</code> · <code>PATCH /archive</code> · <code>POST /milestones</code></td></tr>
+        <tr><td>المنتجات</td><td><code>apiResource products</code> · <code>GET products/{id}/work</code></td></tr>
+        <tr><td>CRM</td><td><code>clients</code> · <code>interactions</code> · <code>opportunities</code> · <code>PATCH /stage</code> · <code>POST /convert-to-project</code></td></tr>
+        <tr><td>المعرفة والإشعارات</td><td><code>knowledge</code> · <code>notifications</code> · <code>mark-all-read</code></td></tr>
+        <tr><td>عامة</td><td><code>GET dashboard</code> · <code>GET search?q=</code> · <code>GET/PUT settings/workspace</code></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="run">
+    <h2><span class="n">7</span> التشغيل خطوة بخطوة</h2>
+    <h3>المتطلبات</h3>
+    <p>Node.js 20+ · pnpm 10 · PHP 8.4 (≥ 8.4.1) مع <code>pdo_sqlite</code> و<code>intl</code> و<code>mbstring</code> · Composer 2.8+ (و Docker للتشغيل الإنتاجي).</p>
+    <h3>أ) تشغيل محلي (الأسهل)</h3>
+    <ol class="steps">
+      <li><b>استنساخ المستودع</b>
+<pre><code>git clone https://github.com/Novixa-dev/novixa-work-os.git
+cd novixa-work-os</code></pre></li>
+      <li><b>تجهيز الخادم</b>
+<pre><code>cd apps/api
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve --port=8000</code></pre></li>
+      <li><b>تشغيل الواجهة</b> (في نافذة طرفية ثانية)
+<pre><code>cd apps/web
+pnpm install
+pnpm dev        # http://localhost:3000</code></pre></li>
+      <li><b>تسجيل الدخول</b> بحساب <code>ahmed@novixa.dev</code> وكلمة المرور <code>password123</code>.</li>
+    </ol>
+    <div class="callout">على ويندوز: يمكن استخدام <code>.\scripts\setup.ps1</code> أو الأمر <code>pnpm setup</code> من الجذر.</div>
+    <h3>ب) تشغيل بـ Docker (بيئة شبه إنتاجية)</h3>
+<pre><code>cp .env.example .env     # املأ APP_KEY و DB_PASSWORD (إلزاميان)
+docker compose up -d --build</code></pre>
+    <div class="callout ok">الملف يرفض الإقلاع الآن دون <code>APP_KEY</code> و<code>DB_PASSWORD</code> — لا توجد قيم افتراضية سرّية في المستودع.</div>
+  </section>
+
+  <section id="manual">
+    <h2><span class="n">8</span> دليل الاختبار اليدوي</h2>
+    <p class="lead">علّم المربعات أثناء التجربة. (تُحفَظ الحالة في صفحتك فقط ولا تُرسَل لأي مكان.)</p>
+
+    <h3>🔐 الدخول والحساب</h3>
+    <ul class="check">
+      <li><input type="checkbox" id="m1"><label for="m1">الدخول بحساب المالك ينجح، وكلمة مرور خاطئة تعرض رسالة خطأ بالعربية.</label></li>
+      <li><input type="checkbox" id="m2"><label for="m2">بعد 5 محاولات فاشلة يظهر حظر مؤقت (Rate limit).</label></li>
+      <li><input type="checkbox" id="m3"><label for="m3">تبديل اللغة (عربي ⇄ إنجليزي) يقلب الاتجاه RTL/LTR والأيقونات والتواريخ.</label></li>
+      <li><input type="checkbox" id="m4"><label for="m4">تبديل الثيم (داكن/فاتح) يحفظ اختيارك بعد إعادة التحميل.</label></li>
+      <li><input type="checkbox" id="m5"><label for="m5">تغيير كلمة المرور بكلمة ضعيفة (أقل من 10 أحرف) يُرفض.</label></li>
+    </ul>
+
+    <h3>✅ المهام والمشاريع</h3>
+    <ul class="check">
+      <li><input type="checkbox" id="t1"><label for="t1">إنشاء مهمة من «إنشاء سريع»؛ يُولَّد لها رمز تلقائي وتظهر في القائمة.</label></li>
+      <li><input type="checkbox" id="t2"><label for="t2">تغيير حالة مهمة (من لوحة الكانبان ثم نافذة المهمة) ينقلها بين الأعمدة ويحدّث تقدّم المشروع.</label></li>
+      <li><input type="checkbox" id="t3"><label for="t3">ربط مهمتين باعتمادية ثم محاولة ربط عكسي يُرفض (منع الدوران).</label></li>
+      <li><input type="checkbox" id="t4"><label for="t4">رفع مرفق PDF وتنزيله؛ وملف بصيغة غير مسموحة يُرفض.</label></li>
+      <li><input type="checkbox" id="t5"><label for="t5">إضافة تعليق وحذفه، وإضافة مهمة إلى «يومي».</label></li>
+      <li><input type="checkbox" id="t6"><label for="t6">إنشاء مشروع وإضافة مرحلة، ثم أرشفته.</label></li>
+    </ul>
+
+    <h3>🤝 المنتجات وCRM والمعرفة</h3>
+    <ul class="check">
+      <li><input type="checkbox" id="c1"><label for="c1">تصفّح المنتجات وفتح الأعمال المرتبطة بمنتج.</label></li>
+      <li><input type="checkbox" id="c2"><label for="c2">إضافة عميل وتسجيل تفاعل بموعد متابعة؛ تظهر المتابعة في لوحة التحكم.</label></li>
+      <li><input type="checkbox" id="c3"><label for="c3">نقل فرصة إلى «رابحة» ثم «تحويل إلى مشروع».</label></li>
+      <li><input type="checkbox" id="c4"><label for="c4">إنشاء صفحة معرفة وفتحها بالرابط (slug).</label></li>
+    </ul>
+
+    <h3>🛡️ الصلاحيات (الأهم)</h3>
+    <ul class="check">
+      <li><input type="checkbox" id="p1"><label for="p1">بحساب الضيف: صفحة CRM ممنوعة (403) والبحث لا يُظهر العملاء.</label></li>
+      <li><input type="checkbox" id="p2"><label for="p2">بحساب العضو: لا يمكن إنشاء مستخدمين أو تعديل إعدادات المساحة.</label></li>
+      <li><input type="checkbox" id="p3"><label for="p3">فتح رابط مرفق بحساب لا يملك صلاحية مهمته يُرجع 403.</label></li>
+      <li><input type="checkbox" id="p4"><label for="p4">تعطيل مستخدم من الإعدادات ثم محاولة دخوله تُرفض.</label></li>
+    </ul>
+
+    <h3>♿ الوصولية والاستجابة</h3>
+    <ul class="check">
+      <li><input type="checkbox" id="a1"><label for="a1">التنقل بلوحة المفاتيح (Tab/Enter/Esc) مع إطار تركيز واضح، و<code>Ctrl+K</code> يفتح لوحة الأوامر.</label></li>
+      <li><input type="checkbox" id="a2"><label for="a2">الواجهة سليمة على عرض 360px (جوال) و768px (لوحي) و1440px.</label></li>
+    </ul>
+    <div class="callout">للتحقق من الـ API مباشرة: <code>curl -H "Accept: application/json" http://127.0.0.1:8000/api/v1/settings/workspace</code></div>
+  </section>
+
+  <section id="auto">
+    <h2><span class="n">9</span> الاختبارات الآلية وبوابات الجودة</h2>
+<pre><code># الخادم
+cd apps/api
+composer lint        # Laravel Pint (تنسيق)
+composer analyse     # PHPStan/Larastan مستوى 5
+php artisan test     # 20 اختباراً / 81 تأكيداً
+
+# الواجهة (من الجذر)
+pnpm typecheck:web   # vue-tsc
+pnpm test:web        # Vitest
+pnpm build:web       # Nuxt build</code></pre>
+    <div class="tw"><table>
+      <thead><tr><th>البوابة</th><th class="c">الحالة</th></tr></thead>
+      <tbody>
+        <tr><td>PHPUnit (API)</td><td class="c"><span class="badge b-ok">20/20 ناجح</span></td></tr>
+        <tr><td>Larastan مستوى 5</td><td class="c"><span class="badge b-ok">0 أخطاء</span></td></tr>
+        <tr><td>Pint</td><td class="c"><span class="badge b-ok">نظيف</span></td></tr>
+        <tr><td>vue-tsc</td><td class="c"><span class="badge b-ok">0 أخطاء</span></td></tr>
+        <tr><td>Vitest (ترجمة + مطابقة المفاتيح)</td><td class="c"><span class="badge b-ok">ناجح</span></td></tr>
+        <tr><td>GitHub Actions CI</td><td class="c"><span class="badge b-info">يعمل على كل Push/PR</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="security">
+    <h2><span class="n">10</span> الأمان</h2>
+    <div class="grid">
+      <div class="card"><span class="ic">🛡️</span><h4>تفويض من الخادم</h4><p>Policies بمبدأ الرفض الافتراضي، وفحص كل سجل يُطلب (IDOR).</p></div>
+      <div class="card"><span class="ic">🔑</span><h4>مصادقة</h4><p>Rate limit، تعطيل الحساب، انتهاء الرموز، سياسة كلمة مرور، وإلغاء الرموز الأخرى عند التغيير.</p></div>
+      <div class="card"><span class="ic">📎</span><h4>مرفقات خاصة</h4><p>تخزين خاص بأسماء عشوائية، قيد الحجم/الصيغة، تنزيل بعد فحص الصلاحية، <code>nosniff</code>.</p></div>
+      <div class="card"><span class="ic">🧱</span><h4>ترويسات الأمان</h4><p>X-Frame-Options · Referrer-Policy · Permissions-Policy · HSTS على HTTPS.</p></div>
+    </div>
+    <div class="callout bad"><b>تم إصلاحه:</b> كان <code>docker-compose.yml</code> يحتوي <code>APP_KEY</code> وكلمة مرور قاعدة بيانات افتراضيتين مكتوبتين صراحةً. صارت قيماً إلزامية من <code>.env</code>. يُنصح بتدوير أي مفتاح استُخدم سابقاً.</div>
+  </section>
+
+  <section id="done">
+    <h2><span class="n">11</span> ما أُنجز في جولة التحسين</h2>
+    <div class="tw"><table>
+      <thead><tr><th>المهمة</th><th>المحصلة</th></tr></thead>
+      <tbody>
+        <tr><td>🧹 نظافة المستودع</td><td>حذف ملفات مكررة، Pint على كل الكود، <code>.editorconfig</code>، PHP ^8.4.</td></tr>
+        <tr><td>👷 CI/CD</td><td>GitHub Actions (API + Web)، Dependabot، قوالب PR/Issues.</td></tr>
+        <tr><td>🔒 الأمان</td><td>إصلاح مسار إشعارات كان يُعطي 500، ترويسات أمان، تهريب LIKE، انتهاء الرموز، سياسة كلمات المرور، تأمين Docker.</td></tr>
+        <tr><td>🔬 التحليل الساكن</td><td>Larastan: من 170 خطأ إلى 0. vue-tsc: من 8 إلى 0.</td></tr>
+        <tr><td>🧪 الاختبارات</td><td>من 14 إلى 20 اختباراً للـ API؛ اختبارات ترجمة حقيقية بدل نسخة مكررة.</td></tr>
+        <tr><td>📚 التوثيق</td><td>خطة، تتبّع، وهذا التقرير.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="limits">
+    <h2><span class="n">12</span> القيود المعروفة والخطوات التالية</h2>
+    <ul>
+      <li><span class="badge b-warn">أمان</span> الواجهة تحفظ رمز الدخول في <code>localStorage</code>؛ الأفضل الانتقال لكوكي HttpOnly عبر Sanctum SPA.</li>
+      <li><span class="badge b-warn">مواءمة</span> الوثائق تذكر Nuxt 4 بينما المثبّت 3.21 — قرار ترقية أو تعديل الوثائق.</li>
+      <li><span class="badge b-info">جودة</span> رفع Larastan إلى المستوى 6 (18 ملاحظة أنواع مصفوفات)، وإضافة اختبارات Playwright للرحلات الحرجة.</li>
+      <li><span class="badge b-info">منتج</span> تعديل/حذف صفحات المعرفة، تصفّح (Pagination) للقوائم الكبيرة، وتغطية اختبار أوسع للتعليقات والمرفقات.</li>
+      <li><span class="badge b-info">تشغيل</span> مراقبة وتنبيهات، وتجربة استعادة النسخ الاحتياطي دورياً.</li>
+    </ul>
+  </section>
+
+  <section id="files">
+    <h2><span class="n">13</span> خريطة الملفات والوثائق</h2>
+    <div class="tw"><table>
+      <thead><tr><th>المسار</th><th>المحتوى</th></tr></thead>
+      <tbody>
+        <tr><td><code>apps/api</code></td><td>Laravel: الوحدات في <code>app/Modules/*</code> والنماذج والـ migrations والاختبارات.</td></tr>
+        <tr><td><code>apps/web</code></td><td>Nuxt: الصفحات والمكوّنات والمخازن واللغات (<code>locales/ar.json</code> و<code>en.json</code>).</td></tr>
+        <tr><td><code>docker/</code> · <code>docker-compose.yml</code></td><td>صور PHP/الويب وإعداد Nginx.</td></tr>
+        <tr><td><code>scripts/</code></td><td>إعداد ويندوز، نسخ احتياطي، استعادة.</td></tr>
+        <tr><td><code>docs/MODERNIZATION-PLAN.md</code></td><td>خطة التحسين والمهام وحالتها.</td></tr>
+        <tr><td><code>docs/13-SECURITY.md</code> · <code>12-ROLES…</code></td><td>الأمان والصلاحيات.</td></tr>
+        <tr><td><code>docs/20-PROGRESS.md</code> · <code>21-TRACEABILITY.md</code></td><td>التقدّم وتتبّع المتطلبات.</td></tr>
+        <tr><td><code>CLAUDE.md</code> · <code>AGENTS.md</code></td><td>تعليمات العمل مع وكلاء الذكاء الاصطناعي.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <footer>
+    نوڤيكسا للبرمجيات والحلول الرقمية · «نبني التقنية التي تجعل أعمالك أقوى» · وثيقة داخلية
+  </footer>
+</main>
+</body>
+</html>
