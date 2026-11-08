@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_DB: ${DB_DATABASE:-novixa_work_os}
       POSTGRES_USER: ${DB_USERNAME:-novixa}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-novixa_secure_password_2026}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -28,7 +28,7 @@ services:
     environment:
       APP_NAME: "Novixa WorkOS"
       APP_ENV: production
-      APP_KEY: ${APP_KEY:-base64:75y1bY23DvhVzK448zV4GZp4kH7p0Z/0R3h9X8Z1+kI=}
+      APP_KEY: ${APP_KEY:?Set APP_KEY in .env (php artisan key:generate --show)}
       APP_DEBUG: "false"
       APP_URL: ${APP_URL:-http://localhost}
       DB_CONNECTION: pgsql
@@ -36,7 +36,7 @@ services:
       DB_PORT: 5432
       DB_DATABASE: ${DB_DATABASE:-novixa_work_os}
       DB_USERNAME: ${DB_USERNAME:-novixa}
-      DB_PASSWORD: ${DB_PASSWORD:-novixa_secure_password_2026}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
       SESSION_DRIVER: database
       QUEUE_CONNECTION: database
       SANCTUM_STATEFUL_DOMAINS: ${SANCTUM_STATEFUL_DOMAINS:-localhost,127.0.0.1}
@@ -59,13 +59,13 @@ services:
     environment:
       APP_NAME: "Novixa WorkOS Queue"
       APP_ENV: production
-      APP_KEY: ${APP_KEY:-base64:75y1bY23DvhVzK448zV4GZp4kH7p0Z/0R3h9X8Z1+kI=}
+      APP_KEY: ${APP_KEY:?Set APP_KEY in .env (php artisan key:generate --show)}
       DB_CONNECTION: pgsql
       DB_HOST: db
       DB_PORT: 5432
       DB_DATABASE: ${DB_DATABASE:-novixa_work_os}
       DB_USERNAME: ${DB_USERNAME:-novixa}
-      DB_PASSWORD: ${DB_PASSWORD:-novixa_secure_password_2026}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
       QUEUE_CONNECTION: database
     volumes:
       - storage_data:/var/www/html/storage/app
