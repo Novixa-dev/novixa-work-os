@@ -630,7 +630,7 @@ onMounted(async () => {
         <UiTextarea
           v-model="projectForm.description_ar"
           :label="t('projects.description')"
-          rows="3"
+          :rows="3"
           :placeholder="locale === 'ar' ? 'أهداف ومخرجات المشروع الرئيسية...' : 'Main objectives and deliverables...'"
         />
 

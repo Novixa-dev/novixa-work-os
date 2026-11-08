@@ -34,6 +34,8 @@ jobs:
       - run: cp .env.example .env && php artisan key:generate
       - name: Code style (Pint)
         run: vendor/bin/pint --test
+      - name: Static analysis (PHPStan/Larastan)
+        run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress
       - name: Tests
         run: php artisan test
 
@@ -50,6 +52,8 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Type check
+        run: pnpm typecheck:web
       - name: Unit tests
         run: pnpm test:web
       - name: Build

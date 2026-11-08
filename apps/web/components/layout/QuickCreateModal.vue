@@ -182,7 +182,7 @@ const tabs = [
   { id: 'task', nameAr: 'مهمة جديدة', nameEn: 'Task' },
   { id: 'project', nameAr: 'مشروع جديد', nameEn: 'Project' },
   { id: 'client', nameAr: 'عميل جديد', nameEn: 'Client' },
-]
+] as const
 
 const projectOptions = ref<{ label: string; value: number }[]>([])
 const userOptions = ref<{ label: string; value: number }[]>([])

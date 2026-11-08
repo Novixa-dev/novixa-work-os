@@ -85,7 +85,7 @@ class AuthController extends Controller
         if ($user) {
             AuditLog::log('auth.logout', $user, [], $user->id);
             // Revoke current token
-            $user->currentAccessToken()?->delete();
+            $user->currentAccessToken()->delete();
         }
 
         Auth::guard('web')->logout();

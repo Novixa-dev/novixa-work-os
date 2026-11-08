@@ -319,7 +319,7 @@ onMounted(fetchPages)
         <UiTextarea
           v-model="pageForm.content_ar"
           :label="locale === 'ar' ? 'محتوى الوثيقة بالتفصيل (يدعم التنسيق والفقرات)' : 'Content (Arabic)'"
-          rows="8"
+          :rows="8"
           required
           placeholder="اكتب تفاصيل الإجراء، الخطوات، والمسؤوليات..."
         />
@@ -327,7 +327,7 @@ onMounted(fetchPages)
         <UiTextarea
           v-model="pageForm.content_en"
           :label="locale === 'ar' ? 'المحتوى (بالإنجليزية - اختياري)' : 'Content (English)'"
-          rows="4"
+          :rows="4"
           placeholder="English content version if available..."
         />
 

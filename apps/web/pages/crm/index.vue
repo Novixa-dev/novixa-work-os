@@ -783,7 +783,7 @@ onMounted(fetchData)
         <UiTextarea
           v-model="oppForm.notes"
           :label="locale === 'ar' ? 'ملاحظات وتفاصيل الصفقة' : 'Deal Notes'"
-          rows="3"
+          :rows="3"
         />
 
         <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
@@ -872,7 +872,7 @@ onMounted(fetchData)
           <UiTextarea
             v-model="interactionForm.notes"
             :label="locale === 'ar' ? 'ملخص ما تم الاتفاق عليه ومخرجات التواصل' : 'Meeting Notes & Agreement'"
-            rows="2"
+            :rows="2"
             required
           />
           <div class="flex items-center justify-between">

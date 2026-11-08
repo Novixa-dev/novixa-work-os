@@ -2,10 +2,12 @@
 
 namespace App\Modules\CRM\Resources;
 
+use App\Models\Opportunity;
 use App\Modules\Identity\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin Opportunity */
 class OpportunityResource extends JsonResource
 {
     public function toArray(Request $request): array

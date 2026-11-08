@@ -2,10 +2,12 @@
 
 namespace App\Modules\Projects\Resources;
 
+use App\Models\Project;
 use App\Modules\Identity\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin Project */
 class ProjectResource extends JsonResource
 {
     public function toArray(Request $request): array

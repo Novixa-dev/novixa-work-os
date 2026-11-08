@@ -451,7 +451,7 @@ onMounted(async () => {
         <UiTextarea
           v-model="productForm.description_ar"
           :label="locale === 'ar' ? 'وصف المنتج وقيمته السوقية' : 'Description & Value Prop'"
-          rows="3"
+          :rows="3"
         />
 
         <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">

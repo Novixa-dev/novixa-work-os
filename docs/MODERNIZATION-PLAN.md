@@ -8,8 +8,8 @@
 | T1 | 🧹 نظافة المستودع: حذف الملفات المكررة، تنسيق PHP (Pint)، `.editorconfig`، تثبيت PHP ^8.4 | ✅ |
 | T2 | 🤖 CI عبر GitHub Actions (API + Web) + Dependabot + قوالب PR/Issues | ✅ |
 | T3 | 🔒 مراجعة أمنية للـ API وإصلاح الثغرات + اختبارات صلاحيات إضافية | ✅ |
-| T4 | 🔬 تحليل ساكن (Larastan) + رفع تغطية الاختبارات | ⬜ |
-| T5 | 🎨 الواجهة: ESLint + Prettier + typecheck + اختبارات مكوّنات | ⬜ |
+| T4 | 🔬 تحليل ساكن (Larastan) + رفع تغطية الاختبارات | ✅ |
+| T5 | 🎨 الواجهة: ESLint + Prettier + typecheck + اختبارات مكوّنات | 🔄 |
 | T6 | 📚 توثيق: README, CONTRIBUTING, SECURITY, CHANGELOG | ⬜ |
 | T7 | 📄 تقرير المشروع العربي الشامل (HTML) | ⬜ |
 | T8 | 📈 تحديث PROGRESS / TRACEABILITY / TASK-TRACKER | ⬜ |
@@ -34,3 +34,8 @@
 | امتداد المرفق من العميل | استخدام `extension()` المُستنتج من المحتوى |
 
 **مخاطر معروفة (موثّقة):** الواجهة تخزّن الرمز في `localStorage` (يُفضَّل كوكي HttpOnly عبر Sanctum SPA) — مُدرجة كتحسين لاحق.
+
+## 🔬 نتائج T4 / T5 (الجودة)
+- **PHPStan/Larastan المستوى 5:** من 170 خطأ إلى **0** (PHPDoc للنماذج عبر ide-helper + generics للعلاقات + `@mixin` للـ Resources). المستوى 6 فيه 18 ملاحظة (أنواع المصفوفات) — تحسين لاحق.
+- **vue-tsc:** من 8 أخطاء إلى **0**، وأُضيف `tsconfig.json`.
+- **الترجمة:** استُخرجت `utils/translate.ts` (منطق نقي) لتختبر الاختبارات الكود الحقيقي بدل نسخة مكررة + اختبار تطابق مفاتيح AR/EN.

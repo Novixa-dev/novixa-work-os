@@ -7,12 +7,14 @@
     "dev:web": "pnpm --filter web dev",
     "build:web": "pnpm --filter web build",
     "test:web": "pnpm --filter web test",
-    "lint:web": "pnpm --filter web lint",
     "typecheck:web": "pnpm --filter web typecheck",
     "test:api": "cd apps/api && php artisan test",
     "migrate:api": "cd apps/api && php artisan migrate",
     "seed:api": "cd apps/api && php artisan db:seed",
-    "setup": "powershell -ExecutionPolicy Bypass -File ./scripts/setup.ps1"
+    "setup": "powershell -ExecutionPolicy Bypass -File ./scripts/setup.ps1",
+    "lint:api": "cd apps/api && composer lint",
+    "analyse:api": "cd apps/api && composer analyse",
+    "check": "pnpm typecheck:web && pnpm test:web"
   },
   "keywords": [
     "novixa",

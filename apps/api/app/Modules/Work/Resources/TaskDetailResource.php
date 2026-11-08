@@ -2,10 +2,12 @@
 
 namespace App\Modules\Work\Resources;
 
+use App\Models\Task;
 use App\Modules\Identity\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin Task */
 class TaskDetailResource extends JsonResource
 {
     public function toArray(Request $request): array

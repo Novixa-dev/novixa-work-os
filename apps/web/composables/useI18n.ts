@@ -1,5 +1,6 @@
 import arDict from '~/locales/ar.json'
 import enDict from '~/locales/en.json'
+import { translate, type Dictionary } from '~/utils/translate'
 
 type Locale = 'ar' | 'en'
 
@@ -31,39 +32,14 @@ export function useI18n() {
     applyDocumentDirection()
   }
 
-  function t(path: string, params: Record<string, any> = {}): string {
-    const dict = currentLocale.value === 'ar' ? arDict : enDict
-    const keys = path.split('.')
-    let current: any = dict
-
-    for (const key of keys) {
-      if (current && typeof current === 'object' && key in current) {
-        current = current[key]
-      } else {
-        // Fallback to English if key missing in Arabic
-        let fallback: any = enDict
-        for (const fbKey of keys) {
-          if (fallback && typeof fallback === 'object' && fbKey in fallback) {
-            fallback = fallback[fbKey]
-          } else {
-            return path
-          }
-        }
-        current = fallback
-        break
-      }
-    }
-
-    if (typeof current !== 'string') {
-      return path
-    }
-
-    let output = current
-    for (const [paramKey, paramVal] of Object.entries(params)) {
-      output = output.replace(new RegExp(`{${paramKey}}`, 'g'), String(paramVal))
-    }
-
-    return output
+  function t(path: string, params: Record<string, string | number> = {}): string {
+    const arabic = currentLocale.value === 'ar'
+    return translate(
+      (arabic ? arDict : enDict) as Dictionary,
+      (arabic ? enDict : arDict) as Dictionary,
+      path,
+      params,
+    )
   }
 
   return {
