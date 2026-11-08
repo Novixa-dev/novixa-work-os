@@ -8,6 +8,7 @@
     "build:web": "pnpm --filter web build",
     "test:web": "pnpm --filter web test",
     "typecheck:web": "pnpm --filter web typecheck",
+    "lint:web": "pnpm --filter web lint",
     "test:api": "cd apps/api && php artisan test",
     "migrate:api": "cd apps/api && php artisan migrate",
     "seed:api": "cd apps/api && php artisan db:seed",

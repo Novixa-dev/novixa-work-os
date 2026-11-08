@@ -297,7 +297,7 @@ onMounted(async () => {
           </div>
         </div>
 
-        <form @submit.prevent="savePreferences" class="space-y-5">
+        <form class="space-y-5" @submit.prevent="savePreferences">
           <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-3">
             {{ locale === 'ar' ? 'تخصيص الواجهة وبيئة العمل' : 'Interface & Localization Preferences' }}
           </h3>
@@ -413,8 +413,8 @@ onMounted(async () => {
             v-if="auth.isAdmin.value"
             variant="primary"
             size="sm"
-            @click="openAddUser"
             class="flex items-center gap-1.5"
+            @click="openAddUser"
           >
             <Plus class="w-4 h-4" />
             <span>{{ locale === 'ar' ? 'إضافة عضو جديد' : 'Add Member' }}</span>
@@ -487,7 +487,7 @@ onMounted(async () => {
     <!-- TAB 3: WORKSPACE IDENTITY (Admin/Owner) -->
     <div v-else-if="activeTab === 'workspace' && auth.isAdmin.value" class="space-y-6">
       <UiCard class="p-5">
-        <form @submit.prevent="saveWorkspaceInfo" class="space-y-4">
+        <form class="space-y-4" @submit.prevent="saveWorkspaceInfo">
           <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
             <Shield class="w-5 h-5 text-primary-600" />
             <h3 class="text-sm font-bold text-slate-900 dark:text-white">
@@ -570,7 +570,7 @@ onMounted(async () => {
       :title="locale === 'ar' ? 'إضافة عضو جديد للفريق' : 'Add Team Member'"
       max-width="lg"
     >
-      <form @submit.prevent="handleAddUser" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="handleAddUser">
         <div v-if="userFormError" class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 text-xs">
           {{ userFormError }}
         </div>

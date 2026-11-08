@@ -191,8 +191,8 @@ onMounted(async () => {
       <UiButton
         v-if="!auth.isGuest.value"
         variant="primary"
-        @click="openCreateModal"
         class="flex items-center gap-1.5"
+        @click="openCreateModal"
       >
         <Plus class="w-4 h-4" />
         {{ t('products.create_product') }}
@@ -215,8 +215,8 @@ onMounted(async () => {
 
       <select
         v-model="selectedStatus"
-        @change="fetchProducts"
         class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+        @change="fetchProducts"
       >
         <option v-for="st in statusOptions" :key="st.value" :value="st.value">
           {{ locale === 'ar' ? st.label_ar : st.label_en }}
@@ -361,7 +361,7 @@ onMounted(async () => {
       :title="t('products.create_product')"
       max-width="2xl"
     >
-      <form @submit.prevent="handleCreateProduct" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="handleCreateProduct">
         <div v-if="formError" class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 text-xs">
           {{ formError }}
         </div>

@@ -135,8 +135,8 @@ onMounted(fetchPages)
       <UiButton
         v-if="!auth.isGuest.value"
         variant="primary"
-        @click="openCreateModal"
         class="flex items-center gap-1.5"
+        @click="openCreateModal"
       >
         <Plus class="w-4 h-4" />
         {{ t('knowledge.create_page') }}
@@ -276,7 +276,7 @@ onMounted(fetchPages)
       :title="t('knowledge.create_page')"
       max-width="2xl"
     >
-      <form @submit.prevent="handleCreatePage" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="handleCreatePage">
         <div v-if="formError" class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 text-xs">
           {{ formError }}
         </div>

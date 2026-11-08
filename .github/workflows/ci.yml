@@ -52,6 +52,8 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Lint (ESLint)
+        run: pnpm lint:web
       - name: Type check
         run: pnpm typecheck:web
       - name: Unit tests

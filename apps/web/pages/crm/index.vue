@@ -361,8 +361,8 @@ onMounted(fetchData)
         <UiButton
           v-if="!auth.isGuest.value"
           variant="outline"
-          @click="openCreateClient"
           class="flex items-center gap-1.5"
+          @click="openCreateClient"
         >
           <Building2 class="w-4 h-4" />
           {{ t('crm.create_client') }}
@@ -370,8 +370,8 @@ onMounted(fetchData)
         <UiButton
           v-if="!auth.isGuest.value"
           variant="primary"
-          @click="openCreateOpp()"
           class="flex items-center gap-1.5"
+          @click="openCreateOpp()"
         >
           <Plus class="w-4 h-4" />
           {{ t('crm.create_opportunity') }}
@@ -624,7 +624,7 @@ onMounted(fetchData)
       :title="t('crm.create_client')"
       max-width="xl"
     >
-      <form @submit.prevent="handleCreateClient" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="handleCreateClient">
         <div v-if="formError" class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 text-xs">
           {{ formError }}
         </div>
@@ -710,7 +710,7 @@ onMounted(fetchData)
       :title="t('crm.create_opportunity')"
       max-width="xl"
     >
-      <form @submit.prevent="handleCreateOpp" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="handleCreateOpp">
         <div v-if="formError" class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 text-xs">
           {{ formError }}
         </div>
@@ -803,7 +803,7 @@ onMounted(fetchData)
       :title="t('crm.won_dialog_title')"
       max-width="md"
     >
-      <form @submit.prevent="handleConvertWonDeal" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="handleConvertWonDeal">
         <div class="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-lg text-emerald-800 dark:text-emerald-200 text-xs">
           {{ t('crm.won_dialog_desc') }}
         </div>
@@ -846,7 +846,7 @@ onMounted(fetchData)
     >
       <div class="space-y-6">
         <!-- Log new interaction form -->
-        <form @submit.prevent="handleAddInteraction" class="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-lg border border-slate-100 dark:border-slate-800 space-y-3">
+        <form class="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-lg border border-slate-100 dark:border-slate-800 space-y-3" @submit.prevent="handleAddInteraction">
           <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
             <Plus class="w-3.5 h-3.5 text-primary-600" />
             {{ t('crm.add_interaction') }}

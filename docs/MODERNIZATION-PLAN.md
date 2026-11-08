@@ -9,10 +9,10 @@
 | T2 | 🤖 CI عبر GitHub Actions (API + Web) + Dependabot + قوالب PR/Issues | ✅ |
 | T3 | 🔒 مراجعة أمنية للـ API وإصلاح الثغرات + اختبارات صلاحيات إضافية | ✅ |
 | T4 | 🔬 تحليل ساكن (Larastan) + رفع تغطية الاختبارات | ✅ |
-| T5 | 🎨 الواجهة: ESLint + Prettier + typecheck + اختبارات مكوّنات | 🔄 |
+| T5 | 🎨 الواجهة: ESLint + Prettier + typecheck + اختبارات مكوّنات | ✅ |
 | T6 | 📚 توثيق: README, CONTRIBUTING, SECURITY, CHANGELOG | ✅ |
 | T7 | 📄 تقرير المشروع العربي الشامل (HTML) | ✅ |
-| T8 | 📈 تحديث PROGRESS / TRACEABILITY / TASK-TRACKER | ⬜ |
+| T8 | 📈 تحديث PROGRESS / TRACEABILITY / TASK-TRACKER | 🔄 |
 
 ## معايير القبول العامة
 - `php artisan test` أخضر، `pint --test` نظيف، `pnpm test` و`pnpm typecheck` ناجحان.

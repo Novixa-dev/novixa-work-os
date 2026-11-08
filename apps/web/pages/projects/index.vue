@@ -250,8 +250,8 @@ onMounted(async () => {
             type="button"
             class="p-1.5 rounded-md transition-colors"
             :class="viewMode === 'grid' ? 'bg-white dark:bg-slate-700 text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'"
-            @click="viewMode = 'grid'"
             :title="locale === 'ar' ? 'عرض شبكي' : 'Grid View'"
+            @click="viewMode = 'grid'"
           >
             <LayoutGrid class="w-4 h-4" />
           </button>
@@ -259,8 +259,8 @@ onMounted(async () => {
             type="button"
             class="p-1.5 rounded-md transition-colors"
             :class="viewMode === 'table' ? 'bg-white dark:bg-slate-700 text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'"
-            @click="viewMode = 'table'"
             :title="locale === 'ar' ? 'عرض جدول' : 'Table View'"
+            @click="viewMode = 'table'"
           >
             <ListIcon class="w-4 h-4" />
           </button>
@@ -269,8 +269,8 @@ onMounted(async () => {
         <UiButton
           v-if="!auth.isGuest.value"
           variant="primary"
-          @click="openCreateModal"
           class="flex items-center gap-1.5"
+          @click="openCreateModal"
         >
           <Plus class="w-4 h-4" />
           {{ t('projects.create_project') }}
@@ -296,8 +296,8 @@ onMounted(async () => {
         <!-- Status Filter -->
         <select
           v-model="selectedStatus"
-          @change="fetchProjects"
           class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          @change="fetchProjects"
         >
           <option v-for="st in statusOptions" :key="st.value" :value="st.value">
             {{ locale === 'ar' ? st.label_ar : st.label_en }}
@@ -307,8 +307,8 @@ onMounted(async () => {
         <!-- Type Filter -->
         <select
           v-model="selectedType"
-          @change="fetchProjects"
           class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          @change="fetchProjects"
         >
           <option v-for="tp in typeOptions" :key="tp.value" :value="tp.value">
             {{ locale === 'ar' ? tp.label_ar : tp.label_en }}
@@ -542,7 +542,7 @@ onMounted(async () => {
       :title="t('projects.create_project')"
       max-width="2xl"
     >
-      <form @submit.prevent="handleCreateProject" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="handleCreateProject">
         <div v-if="formError" class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 text-xs">
           {{ formError }}
         </div>
@@ -651,7 +651,7 @@ onMounted(async () => {
       :title="t('projects.add_milestone')"
       max-width="md"
     >
-      <form @submit.prevent="handleAddMilestone" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="handleAddMilestone">
         <p class="text-xs text-slate-500">
           {{ locale === 'ar' ? 'إضافة محطة رئيسية لمشروع:' : 'Add milestone to project:' }}
           <strong class="text-slate-800 dark:text-slate-200">
