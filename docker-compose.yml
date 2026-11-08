@@ -1,0 +1,120 @@
+services:
+  # Database: PostgreSQL 16
+  db:
+    image: postgres:16-alpine
+    container_name: novixa_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-novixa_work_os}
+      POSTGRES_USER: ${DB_USERNAME:-novixa}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-novixa_secure_password_2026}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-novixa} -d ${DB_DATABASE:-novixa_work_os}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - novixa_network
+
+  # Backend API: Laravel 13 on PHP 8.4-FPM
+  api:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: novixa_api
+    restart: unless-stopped
+    environment:
+      APP_NAME: "Novixa WorkOS"
+      APP_ENV: production
+      APP_KEY: ${APP_KEY:-base64:75y1bY23DvhVzK448zV4GZp4kH7p0Z/0R3h9X8Z1+kI=}
+      APP_DEBUG: "false"
+      APP_URL: ${APP_URL:-http://localhost}
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:-novixa_work_os}
+      DB_USERNAME: ${DB_USERNAME:-novixa}
+      DB_PASSWORD: ${DB_PASSWORD:-novixa_secure_password_2026}
+      SESSION_DRIVER: database
+      QUEUE_CONNECTION: database
+      SANCTUM_STATEFUL_DOMAINS: ${SANCTUM_STATEFUL_DOMAINS:-localhost,127.0.0.1}
+    volumes:
+      - storage_data:/var/www/html/storage/app
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - novixa_network
+
+  # Background Queue Worker
+  queue:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: novixa_queue
+    restart: unless-stopped
+    command: ["php", "artisan", "queue:work", "--tries=3", "--timeout=90"]
+    environment:
+      APP_NAME: "Novixa WorkOS Queue"
+      APP_ENV: production
+      APP_KEY: ${APP_KEY:-base64:75y1bY23DvhVzK448zV4GZp4kH7p0Z/0R3h9X8Z1+kI=}
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:-novixa_work_os}
+      DB_USERNAME: ${DB_USERNAME:-novixa}
+      DB_PASSWORD: ${DB_PASSWORD:-novixa_secure_password_2026}
+      QUEUE_CONNECTION: database
+    volumes:
+      - storage_data:/var/www/html/storage/app
+    depends_on:
+      api:
+        condition: service_started
+      db:
+        condition: service_healthy
+    networks:
+      - novixa_network
+
+  # Frontend Web Client: Nuxt 4 (Node.js)
+  web:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+    container_name: novixa_web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NUXT_PUBLIC_API_BASE: /api/v1
+    depends_on:
+      - api
+    networks:
+      - novixa_network
+
+  # Reverse Proxy & Edge Router: Nginx
+  nginx:
+    image: nginx:alpine
+    container_name: novixa_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - storage_data:/var/www/html/storage/app:ro
+    depends_on:
+      - web
+      - api
+    networks:
+      - novixa_network
+
+networks:
+  novixa_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  storage_data:
+    driver: local
