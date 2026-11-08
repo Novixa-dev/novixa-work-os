@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Modules\Identity\Requests\UserCreateRequest;
 use App\Modules\Identity\Requests\UserUpdateRequest;
 use App\Modules\Identity\Resources\UserResource;
+use App\Support\Like;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -27,9 +28,9 @@ class UserController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('job_title', 'like', "%{$search}%");
+                $q->where('name', 'like', Like::contains($search))
+                    ->orWhere('email', 'like', Like::contains($search))
+                    ->orWhere('job_title', 'like', Like::contains($search));
             });
         }
 

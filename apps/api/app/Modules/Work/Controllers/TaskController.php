@@ -10,6 +10,7 @@ use App\Modules\Work\Requests\TaskStoreRequest;
 use App\Modules\Work\Requests\TaskUpdateRequest;
 use App\Modules\Work\Resources\TaskDetailResource;
 use App\Modules\Work\Resources\TaskResource;
+use App\Support\Like;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -67,9 +68,9 @@ class TaskController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('title_ar', 'like', "%{$search}%")
-                    ->orWhere('title_en', 'like', "%{$search}%")
-                    ->orWhere('code', 'like', "%{$search}%");
+                $q->where('title_ar', 'like', Like::contains($search))
+                    ->orWhere('title_en', 'like', Like::contains($search))
+                    ->orWhere('code', 'like', Like::contains($search));
             });
         }
 

@@ -7,6 +7,7 @@ use App\Models\AuditLog;
 use App\Models\Project;
 use App\Modules\Projects\Requests\ProjectStoreRequest;
 use App\Modules\Projects\Resources\ProjectResource;
+use App\Support\Like;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -43,9 +44,9 @@ class ProjectController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('name_ar', 'like', "%{$search}%")
-                    ->orWhere('name_en', 'like', "%{$search}%")
-                    ->orWhere('code', 'like', "%{$search}%");
+                $q->where('name_ar', 'like', Like::contains($search))
+                    ->orWhere('name_en', 'like', Like::contains($search))
+                    ->orWhere('code', 'like', Like::contains($search));
             });
         }
 

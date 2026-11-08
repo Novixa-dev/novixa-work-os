@@ -33,7 +33,7 @@ class TaskAttachmentController extends Controller
         $sizeBytes = $file->getSize();
 
         // Store with secure random UUID filename in private storage
-        $storedName = Str::uuid()->toString().'.'.$file->getClientOriginalExtension();
+        $storedName = Str::uuid()->toString().'.'.$file->extension();
         $path = $file->storeAs('private/attachments', $storedName);
 
         $attachment = $task->attachments()->create([

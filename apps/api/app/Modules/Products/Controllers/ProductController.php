@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Modules\Products\Resources\ProductResource;
 use App\Modules\Projects\Resources\ProjectResource;
 use App\Modules\Work\Resources\TaskResource;
+use App\Support\Like;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -27,9 +28,9 @@ class ProductController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('name_ar', 'like', "%{$search}%")
-                    ->orWhere('name_en', 'like', "%{$search}%")
-                    ->orWhere('slug', 'like', "%{$search}%");
+                $q->where('name_ar', 'like', Like::contains($search))
+                    ->orWhere('name_en', 'like', Like::contains($search))
+                    ->orWhere('slug', 'like', Like::contains($search));
             });
         }
 

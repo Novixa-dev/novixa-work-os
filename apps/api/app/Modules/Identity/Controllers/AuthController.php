@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -29,7 +30,7 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        if (! Auth::attempt($credentials, true)) {
+        if (! Auth::attempt($credentials)) {
             RateLimiter::hit($throttleKey, 60);
 
             AuditLog::log('auth.failed', null, [
@@ -119,7 +120,7 @@ class AuthController extends Controller
             'name' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'current_password' => ['nullable', 'required_with:new_password', 'string'],
-            'new_password' => ['nullable', 'string', 'min:8'],
+            'new_password' => ['nullable', 'string', Password::min(10)->mixedCase()->numbers()],
         ]);
 
         if (! empty($validated['new_password'])) {
@@ -129,6 +130,8 @@ class AuthController extends Controller
                 ]);
             }
             $user->password = Hash::make($validated['new_password']);
+            // Invalidate every other session token after a password change
+            $user->tokens()->where('id', '!=', $user->currentAccessToken()->id ?? 0)->delete();
         }
 
         if (isset($validated['locale'])) {

@@ -78,7 +78,7 @@ Route::prefix('v1')->group(function () {
 
         // Notifications
         Route::get('notifications', [NotificationController::class, 'index']);
-        Route::patch('notifications/{notification}/read', [NotificationController::class, 'markRead']);
+        Route::patch('notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
         Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllRead']);
 
         // Dashboard & Global Search

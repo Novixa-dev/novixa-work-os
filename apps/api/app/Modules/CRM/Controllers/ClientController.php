@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\Client;
 use App\Modules\CRM\Resources\ClientResource;
+use App\Support\Like;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,9 +32,9 @@ class ClientController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('name_ar', 'like', "%{$search}%")
-                    ->orWhere('name_en', 'like', "%{$search}%")
-                    ->orWhere('city', 'like', "%{$search}%");
+                $q->where('name_ar', 'like', Like::contains($search))
+                    ->orWhere('name_en', 'like', Like::contains($search))
+                    ->orWhere('city', 'like', Like::contains($search));
             });
         }
 

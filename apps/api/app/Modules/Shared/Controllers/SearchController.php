@@ -8,6 +8,7 @@ use App\Models\KnowledgePage;
 use App\Models\Product;
 use App\Models\Project;
 use App\Models\Task;
+use App\Support\Like;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -25,9 +26,9 @@ class SearchController extends Controller
 
         // 1. Tasks
         $taskQuery = Task::where(function ($q) use ($query) {
-            $q->where('code', 'like', "%{$query}%")
-                ->orWhere('title_ar', 'like', "%{$query}%")
-                ->orWhere('title_en', 'like', "%{$query}%");
+            $q->where('code', 'like', Like::contains($query))
+                ->orWhere('title_ar', 'like', Like::contains($query))
+                ->orWhere('title_en', 'like', Like::contains($query));
         });
 
         if ($user->isGuest()) {
@@ -51,9 +52,9 @@ class SearchController extends Controller
 
         // 2. Projects
         $projQuery = Project::where(function ($q) use ($query) {
-            $q->where('code', 'like', "%{$query}%")
-                ->orWhere('name_ar', 'like', "%{$query}%")
-                ->orWhere('name_en', 'like', "%{$query}%");
+            $q->where('code', 'like', Like::contains($query))
+                ->orWhere('name_ar', 'like', Like::contains($query))
+                ->orWhere('name_en', 'like', Like::contains($query));
         });
 
         if ($user->isGuest()) {
@@ -73,9 +74,9 @@ class SearchController extends Controller
         }
 
         // 3. Products
-        $products = Product::where('name_ar', 'like', "%{$query}%")
-            ->orWhere('name_en', 'like', "%{$query}%")
-            ->orWhere('slug', 'like', "%{$query}%")
+        $products = Product::where('name_ar', 'like', Like::contains($query))
+            ->orWhere('name_en', 'like', Like::contains($query))
+            ->orWhere('slug', 'like', Like::contains($query))
             ->take(4)
             ->get();
 
@@ -92,9 +93,9 @@ class SearchController extends Controller
 
         // 4. Clients (non-guest only)
         if (! $user->isGuest()) {
-            $clients = Client::where('name_ar', 'like', "%{$query}%")
-                ->orWhere('name_en', 'like', "%{$query}%")
-                ->orWhere('city', 'like', "%{$query}%")
+            $clients = Client::where('name_ar', 'like', Like::contains($query))
+                ->orWhere('name_en', 'like', Like::contains($query))
+                ->orWhere('city', 'like', Like::contains($query))
                 ->take(4)
                 ->get();
 
@@ -111,8 +112,8 @@ class SearchController extends Controller
         }
 
         // 5. Knowledge Pages
-        $pages = KnowledgePage::where('title_ar', 'like', "%{$query}%")
-            ->orWhere('title_en', 'like', "%{$query}%")
+        $pages = KnowledgePage::where('title_ar', 'like', Like::contains($query))
+            ->orWhere('title_en', 'like', Like::contains($query))
             ->take(3)
             ->get();
 

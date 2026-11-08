@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\KnowledgePage;
 use App\Modules\Identity\Resources\UserResource;
+use App\Support\Like;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -23,9 +24,9 @@ class KnowledgeController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('title_ar', 'like', "%{$search}%")
-                    ->orWhere('title_en', 'like', "%{$search}%")
-                    ->orWhere('content_ar', 'like', "%{$search}%");
+                $q->where('title_ar', 'like', Like::contains($search))
+                    ->orWhere('title_en', 'like', Like::contains($search))
+                    ->orWhere('content_ar', 'like', Like::contains($search));
             });
         }
 
