@@ -12,7 +12,7 @@
 | T5 | 🎨 الواجهة: ESLint + Prettier + typecheck + اختبارات مكوّنات | ✅ |
 | T6 | 📚 توثيق: README, CONTRIBUTING, SECURITY, CHANGELOG | ✅ |
 | T7 | 📄 تقرير المشروع العربي الشامل (HTML) | ✅ |
-| T8 | 📈 تحديث PROGRESS / TRACEABILITY / TASK-TRACKER | 🔄 |
+| T8 | 📈 تحديث PROGRESS / TRACEABILITY / TASK-TRACKER | ✅ |
 
 ## معايير القبول العامة
 - `php artisan test` أخضر، `pint --test` نظيف، `pnpm test` و`pnpm typecheck` ناجحان.
