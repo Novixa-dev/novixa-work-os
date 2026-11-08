@@ -489,7 +489,7 @@ class DatabaseSeeder extends Seeder
             'slug' => 'cloud-deployment-sop',
             'category' => 'sop',
             'content_ar' => "## معايير نشر وتثبيت أنظمة نوڤيكسا\n\n1. **إعداد الخادم:** استخدام نظام Ubuntu 24.04 LTS مع تفعيل جدار الحماية UFW والسماح بالمنافذ 22, 80, 443 فقط.\n2. **الحاويات:** تشغيل التطبيقات عبر Docker Compose مع عزل قاعدة بيانات PostgreSQL داخل شبكة Docker الداخلية.\n3. **شهادات الأمان:** تفعيل Let's Encrypt SSL مع التجديد التلقائي عبر Nginx.\n4. **النسخ الاحتياطي:** تشغيل سكريبت `backup.sh` يومياً في تمام الساعة 2:00 صباحاً بتوقيت مكة المكرمة مع تشفير النسخة وتخزينها خارج السيرفر.",
-            'content_en' => "Standard Operating Procedure for deploying Novixa services using Docker Compose, Nginx SSL, and isolated PostgreSQL databases.",
+            'content_en' => 'Standard Operating Procedure for deploying Novixa services using Docker Compose, Nginx SSL, and isolated PostgreSQL databases.',
             'author_id' => $lead->id,
             'is_published' => true,
         ]);
@@ -500,7 +500,7 @@ class DatabaseSeeder extends Seeder
             'slug' => 'bilingual-rtl-guidelines',
             'category' => 'architecture',
             'content_ar' => "## إرشادات التجربة العربية الأصيلة\n\n1. **الخصائص المنطقية:** استخدام خصائص CSS Logical Properties (مثل `ms-*`, `me-*`, `ps-*`, `pe-*`) لتجنب عكس المواضع يدوياً.\n2. **الخطوط المعتمدة:** استخدام خط IBM Plex Sans Arabic أو Readex Pro لواجهات المستخدم.\n3. **الأرقام والأكواد:** الحفاظ على اتجاه الأكواد البرمجية (مثل `NW-101`) وأرقام الهواتف من اليسار لليمين `dir=\"ltr\"` لضمان صحة القراءة.",
-            'content_en' => "Engineering guidelines for clean bidirectional Arabic-first and English interfaces.",
+            'content_en' => 'Engineering guidelines for clean bidirectional Arabic-first and English interfaces.',
             'author_id' => $designer->id,
             'is_published' => true,
         ]);

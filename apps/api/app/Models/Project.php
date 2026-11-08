@@ -73,6 +73,7 @@ class Project extends Model
         $total = $this->tasks()->whereNull('parent_id')->count();
         if ($total === 0) {
             $this->update(['progress_percentage' => 0]);
+
             return 0;
         }
 
@@ -80,6 +81,7 @@ class Project extends Model
         $percentage = (int) round(($done / $total) * 100);
 
         $this->update(['progress_percentage' => $percentage]);
+
         return $percentage;
     }
 }

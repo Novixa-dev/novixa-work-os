@@ -9,12 +9,12 @@ class OpportunityPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->is_active && !$user->isGuest();
+        return $user->is_active && ! $user->isGuest();
     }
 
     public function view(User $user, Opportunity $opportunity): bool
     {
-        return $user->is_active && !$user->isGuest();
+        return $user->is_active && ! $user->isGuest();
     }
 
     public function create(User $user): bool

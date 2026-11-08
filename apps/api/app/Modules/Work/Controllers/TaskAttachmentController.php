@@ -33,7 +33,7 @@ class TaskAttachmentController extends Controller
         $sizeBytes = $file->getSize();
 
         // Store with secure random UUID filename in private storage
-        $storedName = Str::uuid()->toString() . '.' . $file->getClientOriginalExtension();
+        $storedName = Str::uuid()->toString().'.'.$file->getClientOriginalExtension();
         $path = $file->storeAs('private/attachments', $storedName);
 
         $attachment = $task->attachments()->create([
@@ -74,7 +74,7 @@ class TaskAttachmentController extends Controller
             return response()->json(['message' => 'غير مصرح'], 403);
         }
 
-        if (!Storage::exists($attachment->disk_path)) {
+        if (! Storage::exists($attachment->disk_path)) {
             return response()->json([
                 'message' => 'الملف غير موجود على السيرفر / File not found on disk',
             ], 404);

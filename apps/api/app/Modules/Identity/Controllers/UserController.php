@@ -28,8 +28,8 @@ class UserController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('job_title', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('job_title', 'like', "%{$search}%");
             });
         }
 
@@ -84,14 +84,14 @@ class UserController extends Controller
 
         $validated = $request->validated();
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);
         }
 
         // Only admin/owner can change role
-        if (isset($validated['role']) && !$request->user()->isAdmin()) {
+        if (isset($validated['role']) && ! $request->user()->isAdmin()) {
             unset($validated['role']);
         }
 
@@ -124,7 +124,7 @@ class UserController extends Controller
             ], 422);
         }
 
-        $user->is_active = !$user->is_active;
+        $user->is_active = ! $user->is_active;
         $user->save();
 
         AuditLog::log('user.toggle_active', $user, [

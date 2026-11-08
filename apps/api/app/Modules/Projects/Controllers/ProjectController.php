@@ -5,7 +5,6 @@ namespace App\Modules\Projects\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\Project;
-use App\Models\ProjectMilestone;
 use App\Modules\Projects\Requests\ProjectStoreRequest;
 use App\Modules\Projects\Resources\ProjectResource;
 use Illuminate\Http\JsonResponse;
@@ -29,7 +28,7 @@ class ProjectController extends Controller
 
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
-        } elseif (!$request->boolean('include_archived')) {
+        } elseif (! $request->boolean('include_archived')) {
             $query->where('status', '!=', 'archived');
         }
 
@@ -45,8 +44,8 @@ class ProjectController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name_ar', 'like', "%{$search}%")
-                  ->orWhere('name_en', 'like', "%{$search}%")
-                  ->orWhere('code', 'like', "%{$search}%");
+                    ->orWhere('name_en', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%");
             });
         }
 
@@ -81,10 +80,10 @@ class ProjectController extends Controller
         $memberIds = $validated['member_ids'] ?? [];
         unset($validated['member_ids']);
 
-        $project = DB::transaction(function () use ($validated, $memberIds, $request) {
+        $project = DB::transaction(function () use ($validated, $memberIds) {
             $proj = Project::create($validated);
 
-            if (!empty($memberIds)) {
+            if (! empty($memberIds)) {
                 $proj->members()->sync($memberIds);
             } elseif ($proj->lead_id) {
                 $proj->members()->attach($proj->lead_id, ['role' => 'lead']);

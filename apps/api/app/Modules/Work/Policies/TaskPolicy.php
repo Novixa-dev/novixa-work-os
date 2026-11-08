@@ -20,10 +20,13 @@ class TaskPolicy
 
         // Guest can only view tasks assigned to them or in a project they belong to
         if ($user->isGuest()) {
-            if ($task->assignee_id === $user->id) return true;
+            if ($task->assignee_id === $user->id) {
+                return true;
+            }
             if ($task->project_id && $task->project->members()->where('user_id', $user->id)->exists()) {
                 return true;
             }
+
             return false;
         }
 
@@ -32,7 +35,7 @@ class TaskPolicy
 
     public function create(User $user): bool
     {
-        return $user->is_active && !$user->isGuest();
+        return $user->is_active && ! $user->isGuest();
     }
 
     public function update(User $user, Task $task): bool

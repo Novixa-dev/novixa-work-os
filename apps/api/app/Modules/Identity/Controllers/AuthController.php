@@ -18,7 +18,7 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request): JsonResponse
     {
-        $throttleKey = 'login|' . $request->ip() . '|' . strtolower($request->input('email'));
+        $throttleKey = 'login|'.$request->ip().'|'.strtolower($request->input('email'));
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
@@ -29,7 +29,7 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        if (!Auth::attempt($credentials, true)) {
+        if (! Auth::attempt($credentials, true)) {
             RateLimiter::hit($throttleKey, 60);
 
             AuditLog::log('auth.failed', null, [
@@ -47,7 +47,7 @@ class AuthController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        if (!$user->is_active) {
+        if (! $user->is_active) {
             Auth::logout();
             if ($request->hasSession()) {
                 $request->session()->invalidate();
@@ -122,8 +122,8 @@ class AuthController extends Controller
             'new_password' => ['nullable', 'string', 'min:8'],
         ]);
 
-        if (!empty($validated['new_password'])) {
-            if (!Hash::check($validated['current_password'], $user->password)) {
+        if (! empty($validated['new_password'])) {
+            if (! Hash::check($validated['current_password'], $user->password)) {
                 throw ValidationException::withMessages([
                     'current_password' => ['كلمة المرور الحالية غير صحيحة / Current password is incorrect.'],
                 ]);
@@ -131,11 +131,21 @@ class AuthController extends Controller
             $user->password = Hash::make($validated['new_password']);
         }
 
-        if (isset($validated['locale'])) $user->locale = $validated['locale'];
-        if (isset($validated['timezone'])) $user->timezone = $validated['timezone'];
-        if (isset($validated['theme'])) $user->theme = $validated['theme'];
-        if (isset($validated['name'])) $user->name = $validated['name'];
-        if (isset($validated['phone'])) $user->phone = $validated['phone'];
+        if (isset($validated['locale'])) {
+            $user->locale = $validated['locale'];
+        }
+        if (isset($validated['timezone'])) {
+            $user->timezone = $validated['timezone'];
+        }
+        if (isset($validated['theme'])) {
+            $user->theme = $validated['theme'];
+        }
+        if (isset($validated['name'])) {
+            $user->name = $validated['name'];
+        }
+        if (isset($validated['phone'])) {
+            $user->phone = $validated['phone'];
+        }
 
         $user->save();
 

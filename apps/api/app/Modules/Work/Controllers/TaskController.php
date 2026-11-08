@@ -27,7 +27,7 @@ class TaskController extends Controller
         // Default: root tasks unless subtasks requested explicitly
         if ($request->has('parent_id')) {
             $query->where('parent_id', $request->input('parent_id'));
-        } elseif (!$request->boolean('include_subtasks')) {
+        } elseif (! $request->boolean('include_subtasks')) {
             $query->whereNull('parent_id');
         }
 
@@ -61,15 +61,15 @@ class TaskController extends Controller
 
         if ($request->boolean('overdue')) {
             $query->where('due_date', '<', now()->startOfDay())
-                  ->where('status', '!=', 'done');
+                ->where('status', '!=', 'done');
         }
 
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('title_ar', 'like', "%{$search}%")
-                  ->orWhere('title_en', 'like', "%{$search}%")
-                  ->orWhere('code', 'like', "%{$search}%");
+                    ->orWhere('title_en', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%");
             });
         }
 
@@ -78,6 +78,7 @@ class TaskController extends Controller
 
         if ($request->boolean('kanban')) {
             $tasks = $query->orderBy('kanban_order', 'asc')->get();
+
             return response()->json([
                 'data' => TaskResource::collection($tasks),
             ]);
@@ -165,14 +166,14 @@ class TaskController extends Controller
         $task = DB::transaction(function () use ($validated, $labelIds, $request) {
             // Generate next incremental code: NW-XXX
             $maxId = Task::max('id') ?? 0;
-            $code = 'NW-' . str_pad((string) ($maxId + 1), 3, '0', STR_PAD_LEFT);
+            $code = 'NW-'.str_pad((string) ($maxId + 1), 3, '0', STR_PAD_LEFT);
 
             $validated['code'] = $code;
             $validated['reporter_id'] = $request->user()->id;
 
             $task = Task::create($validated);
 
-            if (!empty($labelIds)) {
+            if (! empty($labelIds)) {
                 $task->labels()->sync($labelIds);
             }
 
@@ -299,7 +300,7 @@ class TaskController extends Controller
     {
         $this->authorize('update', $task);
 
-        $task->is_my_day = !$task->is_my_day;
+        $task->is_my_day = ! $task->is_my_day;
         $task->save();
 
         return response()->json([

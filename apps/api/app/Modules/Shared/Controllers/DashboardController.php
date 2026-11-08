@@ -24,7 +24,7 @@ class DashboardController extends Controller
         $pendingTasksQuery = Task::where('status', '!=', 'done');
         $overdueTasksQuery = Task::where('status', '!=', 'done')->where('due_date', '<', now()->startOfDay());
 
-        if (!$user->isAdmin() && !$user->isManager()) {
+        if (! $user->isAdmin() && ! $user->isManager()) {
             $pendingTasksQuery->where('assignee_id', $user->id);
             $overdueTasksQuery->where('assignee_id', $user->id);
         }
@@ -62,7 +62,7 @@ class DashboardController extends Controller
 
         // 5. CRM Follow-ups (hidden for guests)
         $followUps = [];
-        if (!$user->isGuest()) {
+        if (! $user->isGuest()) {
             $followUps = ClientInteraction::with(['client', 'contact', 'user'])
                 ->whereNotNull('next_follow_up_date')
                 ->where('next_follow_up_date', '>=', now()->subDays(1)->startOfDay())

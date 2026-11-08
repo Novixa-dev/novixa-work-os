@@ -10,12 +10,12 @@ class ClientPolicy
     public function viewAny(User $user): bool
     {
         // Guests cannot access CRM
-        return $user->is_active && !$user->isGuest();
+        return $user->is_active && ! $user->isGuest();
     }
 
     public function view(User $user, Client $client): bool
     {
-        return $user->is_active && !$user->isGuest();
+        return $user->is_active && ! $user->isGuest();
     }
 
     public function create(User $user): bool

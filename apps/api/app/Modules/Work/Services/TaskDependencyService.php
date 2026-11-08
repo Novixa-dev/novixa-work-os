@@ -19,6 +19,7 @@ class TaskDependencyService
 
         // DFS from $dependsOnTaskId to see if we can reach $taskId
         $visited = [];
+
         return $this->canReach($dependsOnTaskId, $taskId, $visited);
     }
 

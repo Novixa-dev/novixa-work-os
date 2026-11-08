@@ -32,8 +32,8 @@ class ClientController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name_ar', 'like', "%{$search}%")
-                  ->orWhere('name_en', 'like', "%{$search}%")
-                  ->orWhere('city', 'like', "%{$search}%");
+                    ->orWhere('name_en', 'like', "%{$search}%")
+                    ->orWhere('city', 'like', "%{$search}%");
             });
         }
 
@@ -56,7 +56,7 @@ class ClientController extends Controller
 
         $client->load([
             'accountManager', 'contacts', 'opportunities.product',
-            'interactions.user', 'projects.lead'
+            'interactions.user', 'projects.lead',
         ]);
 
         return response()->json([
@@ -92,7 +92,7 @@ class ClientController extends Controller
         $client = DB::transaction(function () use ($validated) {
             $client = Client::create($validated);
 
-            if (!empty($validated['primary_contact_name'])) {
+            if (! empty($validated['primary_contact_name'])) {
                 $client->contacts()->create([
                     'name' => $validated['primary_contact_name'],
                     'phone' => $validated['primary_contact_phone'] ?? null,

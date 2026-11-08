@@ -26,14 +26,14 @@ class SearchController extends Controller
         // 1. Tasks
         $taskQuery = Task::where(function ($q) use ($query) {
             $q->where('code', 'like', "%{$query}%")
-              ->orWhere('title_ar', 'like', "%{$query}%")
-              ->orWhere('title_en', 'like', "%{$query}%");
+                ->orWhere('title_ar', 'like', "%{$query}%")
+                ->orWhere('title_en', 'like', "%{$query}%");
         });
 
         if ($user->isGuest()) {
             $taskQuery->where(function ($q) use ($user) {
                 $q->where('assignee_id', $user->id)
-                  ->orWhereHas('project.members', fn ($sub) => $sub->where('user_id', $user->id));
+                    ->orWhereHas('project.members', fn ($sub) => $sub->where('user_id', $user->id));
             });
         }
 
@@ -52,8 +52,8 @@ class SearchController extends Controller
         // 2. Projects
         $projQuery = Project::where(function ($q) use ($query) {
             $q->where('code', 'like', "%{$query}%")
-              ->orWhere('name_ar', 'like', "%{$query}%")
-              ->orWhere('name_en', 'like', "%{$query}%");
+                ->orWhere('name_ar', 'like', "%{$query}%")
+                ->orWhere('name_en', 'like', "%{$query}%");
         });
 
         if ($user->isGuest()) {
@@ -91,7 +91,7 @@ class SearchController extends Controller
         }
 
         // 4. Clients (non-guest only)
-        if (!$user->isGuest()) {
+        if (! $user->isGuest()) {
             $clients = Client::where('name_ar', 'like', "%{$query}%")
                 ->orWhere('name_en', 'like', "%{$query}%")
                 ->orWhere('city', 'like', "%{$query}%")

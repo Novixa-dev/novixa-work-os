@@ -5,7 +5,6 @@ namespace App\Modules\CRM\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\Client;
-use App\Models\ClientInteraction;
 use App\Modules\Identity\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

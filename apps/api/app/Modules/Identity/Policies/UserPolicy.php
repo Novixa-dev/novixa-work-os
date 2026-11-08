@@ -29,9 +29,10 @@ class UserPolicy
 
         if ($user->isAdmin()) {
             // Cannot modify owner unless you are the owner
-            if ($model->isOwner() && !$user->isOwner()) {
+            if ($model->isOwner() && ! $user->isOwner()) {
                 return false;
             }
+
             return true;
         }
 

@@ -36,7 +36,7 @@ class TaskCommentController extends Controller
                 'type' => 'comment.added',
                 'title_ar' => "تعليق جديد على المهمة {$task->code}",
                 'title_en' => "New comment on {$task->code}",
-                'body_ar' => "أضاف {$request->user()->name}: " . mb_substr($comment->comment, 0, 80) . '...',
+                'body_ar' => "أضاف {$request->user()->name}: ".mb_substr($comment->comment, 0, 80).'...',
                 'body_en' => "{$request->user()->name} commented on {$task->code}",
                 'link' => "/tasks?code={$task->code}",
             ]);
@@ -59,7 +59,7 @@ class TaskCommentController extends Controller
 
     public function destroy(Task $task, TaskComment $comment): JsonResponse
     {
-        if ($comment->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+        if ($comment->user_id !== auth()->id() && ! auth()->user()->isAdmin()) {
             return response()->json(['message' => 'غير مصرح'], 403);
         }
 

@@ -41,7 +41,7 @@ class TaskDependencyController extends Controller
         }
 
         $task->dependencies()->syncWithoutDetaching([
-            $depTaskId => ['type' => $validated['type'] ?? 'blocks']
+            $depTaskId => ['type' => $validated['type'] ?? 'blocks'],
         ]);
 
         AuditLog::log('task.dependency_added', $task, [

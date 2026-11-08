@@ -31,7 +31,7 @@ class SettingsController extends Controller
 
     public function updateWorkspaceInfo(Request $request): JsonResponse
     {
-        if (!$request->user()->isAdmin()) {
+        if (! $request->user()->isAdmin()) {
             return response()->json(['message' => 'غير مصرح'], 403);
         }
 

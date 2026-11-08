@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Client;
 use App\Models\Opportunity;
-use App\Models\Product;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;

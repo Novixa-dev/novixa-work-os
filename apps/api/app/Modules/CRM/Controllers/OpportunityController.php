@@ -172,12 +172,12 @@ class OpportunityController extends Controller
         ]);
 
         $project = DB::transaction(function () use ($opportunity, $validated, $request) {
-            $nameAr = $validated['name_ar'] ?: 'مشروع تسليم: ' . $opportunity->title_ar;
+            $nameAr = $validated['name_ar'] ?: 'مشروع تسليم: '.$opportunity->title_ar;
 
             $project = Project::create([
                 'code' => $validated['code'],
                 'name_ar' => $nameAr,
-                'name_en' => $opportunity->title_en ? 'Delivery: ' . $opportunity->title_en : null,
+                'name_en' => $opportunity->title_en ? 'Delivery: '.$opportunity->title_en : null,
                 'description_ar' => "مشروع تسليم تم إنشاؤه تلقائياً من الصفقة الرابحة: {$opportunity->title_ar}\nالعميل: {$opportunity->client->name_ar}",
                 'type' => 'client_delivery',
                 'status' => 'active',
