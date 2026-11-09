@@ -1,0 +1,15 @@
+**/node_modules
+**/.nuxt
+**/.output
+**/vendor
+.git
+.github
+docs
+**/.env
+**/.env.*
+!**/.env.example
+apps/api/storage/logs/*
+apps/api/storage/framework/*/*
+apps/api/database/*.sqlite
+apps/api/tests
+**/coverage

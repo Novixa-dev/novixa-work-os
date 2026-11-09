@@ -11,7 +11,7 @@ if [ $# -lt 1 ]; then
 fi
 
 BACKUP_FILE="$1"
-DB_CONTAINER="${DB_CONTAINER:-novixa_db}"
+DB_CONTAINER="${DB_CONTAINER:-novixa-work-os-db}"
 DB_NAME="${DB_DATABASE:-novixa_work_os}"
 DB_USER="${DB_USERNAME:-novixa}"
 

@@ -1,0 +1,89 @@
+# Novixa WorkOS — production stack. Lives on the VPS at /opt/novixa-work-os/compose.yml
+# (synced by the Deploy workflow). Public traffic: Cloudflare -> mailcow nginx -> web:8080.
+name: novixa-work-os
+
+x-api: &api
+  image: ${API_IMAGE:-ghcr.io/novixa-dev/novixa-work-os-api}:${TAG:-latest}
+  restart: unless-stopped
+  env_file: .env
+  environment:
+    DB_HOST: db
+    DB_CONNECTION: pgsql
+  volumes:
+    - storage:/var/www/html/storage/app
+  networks: [internal]
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: [ALL]
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: novixa-work-os-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-novixa_work_os}
+      POSTGRES_USER: ${DB_USERNAME:-novixa}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-novixa} -d ${DB_DATABASE:-novixa_work_os}"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    networks: [internal]
+    security_opt: ["no-new-privileges:true"]
+    deploy: { resources: { limits: { memory: 512M } } }
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  api:
+    <<: *api
+    container_name: novixa-work-os-api
+    depends_on:
+      db: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(@fsockopen(\"127.0.0.1\", 9000) ? 0 : 1);'"]
+      interval: 15s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    deploy: { resources: { limits: { memory: 512M } } }
+
+  queue:
+    <<: *api
+    container_name: novixa-work-os-queue
+    command: ["php", "artisan", "queue:work", "--tries=3", "--timeout=90", "--max-time=3600"]
+    depends_on:
+      db: { condition: service_healthy }
+    deploy: { resources: { limits: { memory: 256M } } }
+
+  web:
+    image: ${WEB_IMAGE:-ghcr.io/novixa-dev/novixa-work-os-web}:${TAG:-latest}
+    container_name: novixa-work-os-web
+    restart: unless-stopped
+    depends_on:
+      api: { condition: service_healthy }
+    ports:
+      - "127.0.0.1:${WEB_PORT:-3120}:8080"   # loopback only, for on-host checks
+    networks: [internal, edge]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    deploy: { resources: { limits: { memory: 128M } } }
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+networks:
+  internal: {}
+  edge:
+    name: workos-edge
+    external: true
+
+volumes:
+  pgdata: {}
+  storage: {}

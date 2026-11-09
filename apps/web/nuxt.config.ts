@@ -14,6 +14,8 @@ export default defineNuxtConfig({
   ],
 
   app: {
+    // Production serves the SPA under /app/ (public landing page lives at /).
+    baseURL: process.env.NUXT_APP_BASE_URL || '/',
     head: {
       title: 'Novixa WorkOS | منظومة نوڤيكسا لإدارة الأعمال',
       meta: [

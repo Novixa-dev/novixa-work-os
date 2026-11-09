@@ -1,0 +1,113 @@
+name: Deploy
+
+# Runs after CI succeeds on main (or manually). Builds the two images, pushes them to GHCR,
+# then rolls them out on the Contabo VPS with automatic health check + rollback.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  API_IMAGE: ghcr.io/novixa-dev/novixa-work-os-api
+  WEB_IMAGE: ghcr.io/novixa-dev/novixa-work-os-web
+  SITE_URL: https://novixa-work-os.novixa.dev
+
+jobs:
+  build:
+    name: Build & push images
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - id: meta
+        run: echo "tag=sha-$(git rev-parse --short=12 HEAD)" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build & push API image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/api/Dockerfile
+          push: true
+          tags: |
+            ${{ env.API_IMAGE }}:${{ steps.meta.outputs.tag }}
+            ${{ env.API_IMAGE }}:latest
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,scope=api,mode=max
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+      - name: Build & push web image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/web/Dockerfile
+          push: true
+          tags: |
+            ${{ env.WEB_IMAGE }}:${{ steps.meta.outputs.tag }}
+            ${{ env.WEB_IMAGE }}:latest
+          cache-from: type=gha,scope=web
+          cache-to: type=gha,scope=web,mode=max
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+
+  deploy:
+    name: Deploy to VPS
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ env.SITE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: Configure SSH
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+      - name: Sync deploy files
+        run: |
+          TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
+          scp -o BatchMode=yes deploy/compose.yml deploy/remote-deploy.sh deploy/backup.sh "$TARGET:/opt/novixa-work-os/"
+          scp -o BatchMode=yes deploy/novixa-work-os.mailcow.conf "$TARGET:/opt/novixa-work-os/nginx/"
+          ssh -o BatchMode=yes "$TARGET" 'chmod +x /opt/novixa-work-os/*.sh'
+      - name: Roll out
+        run: |
+          TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
+          # The short-lived registry token goes over stdin (never on a command line).
+          printf '%s\n' "${{ secrets.GITHUB_TOKEN }}" | ssh -o BatchMode=yes "$TARGET" \
+            "read -r GHCR_TOKEN; export GHCR_TOKEN GHCR_USER='${{ github.actor }}' OWNER_EMAIL='${{ vars.OWNER_EMAIL || 'admin@novixa.dev' }}'; bash /opt/novixa-work-os/remote-deploy.sh '${{ needs.build.outputs.tag }}'"
+      - name: Smoke test
+        run: |
+          set -e
+          for i in $(seq 1 12); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE_URL/up" || true)
+            [ "$code" = 200 ] && break; sleep 5
+          done
+          echo "/up -> $code"; [ "$code" = 200 ]
+          curl -fsS "$SITE_URL/" | grep -q "Novixa"
+          curl -fsS "$SITE_URL/api/v1/settings/workspace" | grep -q "settings"
+          curl -fsS -o /dev/null "$SITE_URL/app/"
+          echo "✅ smoke tests passed"
