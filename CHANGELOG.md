@@ -2,7 +2,8 @@
 
 يتبع [Keep a Changelog](https://keepachangelog.com/) و[Semantic Versioning](https://semver.org/).
 
-## [1.1.0] — 2026-11-08
+## [1.2.0] — 2026-11-09
+
 ### Security
 - إصلاح مسار `notifications/{id}/read` (كان يرجع 500).
 - ترويسات أمان، تهريب محارف LIKE، انتهاء صلاحية الرموز، سياسة كلمات مرور أقوى.

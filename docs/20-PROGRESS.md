@@ -20,6 +20,12 @@ This document maintains a living, timestamped record of implementation progress,
 
 ## Chronological Progress Entries
 
+### 2026-11-09: Production deployment
+- Live at https://novixa-work-os.novixa.dev (public bilingual company page `/`, workspace `/app/`, API `/api/v1`).
+- New production stack (`docker/api`, `docker/web`, `deploy/`) behind mailcow nginx + Cloudflare; GitHub Actions `Deploy` (build → GHCR → SSH rollout → health check/rollback → curl + Chrome smoke tests); nightly DB backups; first-run owner command `workos:create-owner`.
+- Real-browser testing found and fixed: SPA calling `/app/api/...` (405), CSP blocking Cloudflare analytics, missing favicon.
+- Removed the old root `docker-compose.yml` (conflicted with mailcow on 80/443) and the faulty `-t` in the old backup script.
+
 ### 2026-11-08: Phase 6 — Professional Hardening Pass
 - **Repo/CI:** removed duplicate root docs, `.editorconfig`/`.gitattributes`, GitHub Actions (Pint, Larastan, PHPUnit, ESLint, vue-tsc, Vitest, build), Dependabot, PR/issue templates.
 - **Security:** fixed broken `notifications/{id}/read` route (500), security-headers middleware, LIKE-wildcard escaping, Sanctum token expiry (480 min), stronger password policy + token revocation on change, removed hard-coded `APP_KEY`/`DB_PASSWORD` defaults from `docker-compose.yml`.

@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/Novixa-dev/novixa-work-os/actions/workflows/ci.yml/badge.svg)](https://github.com/Novixa-dev/novixa-work-os/actions/workflows/ci.yml)
 
+> 🌐 **Live:** https://novixa-work-os.novixa.dev — public company page, workspace at `/app/`. Deployment: [`docs/DEPLOYMENT-PRODUCTION.md`](docs/DEPLOYMENT-PRODUCTION.md)
+
 > 📄 **التقرير العربي الشامل:** [`docs/PROJECT-REPORT.ar.html`](docs/PROJECT-REPORT.ar.html) — افتحه في المتصفح (ميزات، تشغيل، اختبار يدوي، أمان).
 
 > **Engineered for Growth • نبني التقنية التي تجعل أعمالك أقوى**  

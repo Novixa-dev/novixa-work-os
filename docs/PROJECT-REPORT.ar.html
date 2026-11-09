@@ -117,7 +117,7 @@
     <div class="stat" role="listitem"><b>8</b><span>وحدات وظيفية</span></div>
     <div class="stat" role="listitem"><b>5</b><span>أدوار وصلاحيات</span></div>
     <div class="stat" role="listitem"><b>28</b><span>جدول قاعدة بيانات</span></div>
-    <div class="stat" role="listitem"><b>20</b><span>اختبار API ناجح</span></div>
+    <div class="stat" role="listitem"><b>22</b><span>اختبار API ناجح</span></div>
     <div class="stat" role="listitem"><b>0</b><span>أخطاء PHPStan / vue-tsc</span></div>
   </div>
 
@@ -137,6 +137,7 @@
       <li><a href="#done">ما أُنجز في جولة التحسين</a></li>
       <li><a href="#limits">القيود المعروفة والخطوات التالية</a></li>
       <li><a href="#files">خريطة الملفات والوثائق</a></li>
+      <li><a href="#live">النشر الإنتاجي المباشر</a></li>
     </ol>
   </nav>
 
@@ -263,10 +264,8 @@ pnpm dev        # http://localhost:3000</code></pre></li>
       <li><b>تسجيل الدخول</b> بحساب <code>ahmed@novixa.dev</code> وكلمة المرور <code>password123</code>.</li>
     </ol>
     <div class="callout">على ويندوز: يمكن استخدام <code>.\scripts\setup.ps1</code> أو الأمر <code>pnpm setup</code> من الجذر.</div>
-    <h3>ب) تشغيل بـ Docker (بيئة شبه إنتاجية)</h3>
-<pre><code>cp .env.example .env     # املأ APP_KEY و DB_PASSWORD (إلزاميان)
-docker compose up -d --build</code></pre>
-    <div class="callout ok">الملف يرفض الإقلاع الآن دون <code>APP_KEY</code> و<code>DB_PASSWORD</code> — لا توجد قيم افتراضية سرّية في المستودع.</div>
+    <h3>ب) النشر على خادم (Docker)</h3>
+    <p>انظر <code>docs/DEPLOYMENT-PRODUCTION.md</code>: صور <code>docker/api</code> و<code>docker/web</code> و<code>deploy/compose.yml</code>. ملف <code>.env</code> (مفتاح التطبيق وكلمة مرور قاعدة البيانات) يُولَّد على الخادم ولا يدخل Git.</p>
   </section>
 
   <section id="manual">
@@ -322,7 +321,7 @@ docker compose up -d --build</code></pre>
 cd apps/api
 composer lint        # Laravel Pint (تنسيق)
 composer analyse     # PHPStan/Larastan مستوى 5
-php artisan test     # 20 اختباراً / 81 تأكيداً
+php artisan test     # 22 اختباراً / 89 تأكيداً
 
 # الواجهة (من الجذر)
 pnpm typecheck:web   # vue-tsc
@@ -331,7 +330,7 @@ pnpm build:web       # Nuxt build</code></pre>
     <div class="tw"><table>
       <thead><tr><th>البوابة</th><th class="c">الحالة</th></tr></thead>
       <tbody>
-        <tr><td>PHPUnit (API)</td><td class="c"><span class="badge b-ok">20/20 ناجح</span></td></tr>
+        <tr><td>PHPUnit (API)</td><td class="c"><span class="badge b-ok">22/22 ناجح</span></td></tr>
         <tr><td>Larastan مستوى 5</td><td class="c"><span class="badge b-ok">0 أخطاء</span></td></tr>
         <tr><td>Pint</td><td class="c"><span class="badge b-ok">نظيف</span></td></tr>
         <tr><td>vue-tsc</td><td class="c"><span class="badge b-ok">0 أخطاء</span></td></tr>
@@ -376,6 +375,24 @@ pnpm build:web       # Nuxt build</code></pre>
       <li><span class="badge b-info">منتج</span> تعديل/حذف صفحات المعرفة، تصفّح (Pagination) للقوائم الكبيرة، وتغطية اختبار أوسع للتعليقات والمرفقات.</li>
       <li><span class="badge b-info">تشغيل</span> مراقبة وتنبيهات، وتجربة استعادة النسخ الاحتياطي دورياً.</li>
     </ul>
+  </section>
+
+  <section id="live">
+    <h2><span class="n">14</span> النشر الإنتاجي المباشر</h2>
+    <p class="lead">المنظومة تعمل الآن على خادم Contabo خلف Cloudflare، ويُنشر كل تعديل تلقائياً بعد نجاح الاختبارات.</p>
+    <div class="tw"><table>
+      <thead><tr><th>العنصر</th><th>القيمة</th></tr></thead>
+      <tbody>
+        <tr><td>الصفحة العامة للشركة (عربي/إنجليزي)</td><td><a href="https://novixa-work-os.novixa.dev/">novixa-work-os.novixa.dev</a></td></tr>
+        <tr><td>المنظومة الداخلية (تسجيل الدخول)</td><td><a href="https://novixa-work-os.novixa.dev/app/">novixa-work-os.novixa.dev/app/</a></td></tr>
+        <tr><td>واجهة API</td><td><code>/api/v1</code></td></tr>
+        <tr><td>التشغيل</td><td>Docker: nginx + php-fpm + queue + PostgreSQL 16 خلف nginx الخاص بـ Mailcow</td></tr>
+        <tr><td>HTTPS</td><td>Cloudflare Proxy + شهادة Origin للنطاق *.novixa.dev</td></tr>
+        <tr><td>النشر التلقائي</td><td>GitHub Actions: CI ⟵ بناء الصور ⟵ نشر ⟵ فحص صحة ⟵ تراجع تلقائي عند الفشل ⟵ اختبار متصفح</td></tr>
+        <tr><td>النسخ الاحتياطي</td><td>يومياً 03:17 على الخادم (14 يوماً) مع checksum</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout ok">تفاصيل التشغيل والتراجع والصيانة: <code>docs/DEPLOYMENT-PRODUCTION.md</code>. لا توجد بيانات تجريبية على الإنتاج؛ يوجد حساب مالك واحد فقط.</div>
   </section>
 
   <section id="files">
