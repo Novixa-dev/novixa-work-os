@@ -111,3 +111,10 @@ jobs:
           curl -fsS "$SITE_URL/api/v1/settings/workspace" | grep -q "settings"
           curl -fsS -o /dev/null "$SITE_URL/app/"
           echo "✅ smoke tests passed"
+      - name: Browser smoke test (Chrome)
+        working-directory: e2e
+        env:
+          BASE_URL: ${{ env.SITE_URL }}
+        run: |
+          npm install --no-audit --no-fund
+          npm run smoke

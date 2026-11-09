@@ -115,9 +115,8 @@ fi
 
 # ---- nginx site block (mailcow) + nightly backups ---------------------------
 sudo /usr/local/sbin/workos-sync-site
-if ! crontab -l 2>/dev/null | grep -q "novixa-work-os-backup"; then
-  ( crontab -l 2>/dev/null; echo "17 3 * * * $APP_DIR/backup.sh >> $APP_DIR/backups/backup.log 2>&1 # novixa-work-os-backup" ) | crontab -
-  echo "✔ nightly backup cron installed"
+if ! { crontab -l 2>/dev/null || true; } | grep -q "novixa-work-os-backup"; then
+  { ( crontab -l 2>/dev/null || true; echo "17 3 * * * $APP_DIR/backup.sh >> $APP_DIR/backups/backup.log 2>&1 # novixa-work-os-backup" ) | crontab - && echo "✔ nightly backup cron installed"; } || echo "::warning::could not install backup cron"
 fi
 
 # Keep current + previous release for instant rollback; prune the rest.

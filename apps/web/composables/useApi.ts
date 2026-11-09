@@ -1,6 +1,11 @@
 export function useApi() {
   const config = useRuntimeConfig()
-  const apiBase = config.public.apiBase || 'http://127.0.0.1:8000/api/v1'
+  const configuredBase = config.public.apiBase || 'http://127.0.0.1:8000/api/v1'
+  // A root-relative base ("/api/v1") must not be resolved against the SPA's baseURL ("/app/"),
+  // so anchor it to the current origin in the browser.
+  const apiBase = import.meta.client && configuredBase.startsWith('/')
+    ? `${location.origin}${configuredBase}`
+    : configuredBase
 
   async function client<T = any>(endpoint: string, options: Parameters<typeof $fetch>[1] = {}): Promise<T> {
     const token = import.meta.client ? localStorage.getItem('novixa_token') : null

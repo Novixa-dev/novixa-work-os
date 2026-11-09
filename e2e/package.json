@@ -1,0 +1,7 @@
+{
+  "name": "novixa-work-os-e2e",
+  "private": true,
+  "type": "module",
+  "scripts": { "smoke": "node smoke.mjs" },
+  "devDependencies": { "playwright-core": "1.49.1" }
+}
