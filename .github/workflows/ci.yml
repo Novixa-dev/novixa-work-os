@@ -60,3 +60,49 @@ jobs:
         run: pnpm test:web
       - name: Build
         run: pnpm build:web
+
+  e2e:
+    name: E2E journeys (Chrome)
+    runs-on: ubuntu-latest
+    needs: [api, web]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, intl, pdo_sqlite, sqlite3
+          coverage: none
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Start API with seeded demo data
+        working-directory: apps/api
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          cp .env.example .env && php artisan key:generate
+          touch database/database.sqlite
+          php artisan migrate --seed --force
+          nohup php artisan serve --port=8000 > /tmp/api.log 2>&1 &
+      - name: Start web (dev server)
+        run: |
+          pnpm install --frozen-lockfile
+          nohup pnpm --filter web dev --port 3000 > /tmp/web.log 2>&1 &
+      - name: Wait for services
+        run: |
+          for i in $(seq 1 60); do
+            curl -fs http://127.0.0.1:8000/up >/dev/null && curl -fs http://localhost:3000/auth/login >/dev/null && exit 0
+            sleep 3
+          done
+          echo "services did not start"; tail -30 /tmp/api.log /tmp/web.log; exit 1
+      - name: Run journeys
+        working-directory: e2e
+        run: |
+          npm ci --no-audit --no-fund
+          npm run journeys
+      - name: Service logs on failure
+        if: failure()
+        run: tail -50 /tmp/api.log /tmp/web.log
