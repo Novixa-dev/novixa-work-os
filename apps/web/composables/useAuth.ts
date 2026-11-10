@@ -44,11 +44,13 @@ export function useAuth() {
     if (token) {
       try {
         await fetchUser()
-      } catch (e) {
-        // Token invalid
-        currentUser.value = null
-        localStorage.removeItem('novixa_token')
-        localStorage.removeItem('novixa_user')
+      } catch (e: any) {
+        // Only an explicit 401 means the token is invalid; keep the cached session on network errors.
+        if (e?.response?.status === 401 || e?.statusCode === 401) {
+          currentUser.value = null
+          localStorage.removeItem('novixa_token')
+          localStorage.removeItem('novixa_user')
+        }
       }
     }
 
@@ -56,7 +58,7 @@ export function useAuth() {
   }
 
   async function login(email: string, password: string):Promise<AuthUser> {
-    const res = await api.post<{ user: AuthUser; token: string }>('/auth/login', { email, password })
+    const res = await api.post<{ user: AuthUser; token: string }>('/auth/login', { email, password }, { silent: true })
 
     currentUser.value = res.user
     if (import.meta.client) {
@@ -85,7 +87,7 @@ export function useAuth() {
 
   async function logout() {
     try {
-      await api.post('/auth/logout')
+      await api.post('/auth/logout', undefined, { silent: true })
     } catch (e) {
       // Ignore network failure on logout
     } finally {

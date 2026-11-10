@@ -100,7 +100,7 @@ async function savePreferences() {
     await api.patch('/auth/preferences', profileForm.value)
     successMessage.value = locale.value === 'ar' ? 'تم حفظ التفضيلات بنجاح' : 'Preferences saved successfully'
   } catch (err: any) {
-    errorMessage.value = err.response?.data?.message || 'Failed to save preferences'
+    errorMessage.value = err?.data?.message || 'Failed to save preferences'
   } finally {
     saving.value = false
   }
@@ -111,7 +111,7 @@ async function loadTeam() {
   loading.value = true
   try {
     const res = await api.get('/users')
-    users.value = res.data?.data || []
+    users.value = (Array.isArray(res.data) ? res.data : [])
   } catch (err) {
     console.error('Failed to load team', err)
   } finally {
@@ -120,11 +120,12 @@ async function loadTeam() {
 }
 
 async function toggleUserActive(u: any) {
+  // The API toasts success/failure itself; only flip the local state when it succeeded.
   try {
-    const res = await api.patch(`/users/${u.id}/toggle-active`)
-    u.is_active = res.data?.user?.is_active
-  } catch (err: any) {
-    alert(err.response?.data?.message || 'Action failed')
+    await api.patch(`/users/${u.id}/toggle-active`)
+    u.is_active = !u.is_active
+  } catch {
+    /* error toast already shown by useApi */
   }
 }
 
@@ -154,7 +155,7 @@ async function handleAddUser() {
     showAddUserModal.value = false
     await loadTeam()
   } catch (err: any) {
-    userFormError.value = err.response?.data?.message || 'Failed to create user'
+    userFormError.value = err?.data?.message || 'Failed to create user'
   } finally {
     submittingUser.value = false
   }
@@ -163,7 +164,7 @@ async function handleAddUser() {
 async function loadWorkspaceInfo() {
   try {
     const res = await api.get('/settings/workspace')
-    const s = res.data?.settings || {}
+    const s = res.settings || {}
     workspaceForm.value = {
       name_ar: s.name_ar || '',
       name_en: s.name_en || '',
@@ -188,7 +189,7 @@ async function saveWorkspaceInfo() {
     await api.put('/settings/workspace', workspaceForm.value)
     successMessage.value = locale.value === 'ar' ? 'تم تحديث هوية بيئة العمل بنجاح' : 'Workspace settings updated successfully'
   } catch (err: any) {
-    errorMessage.value = err.response?.data?.message || 'Failed to update workspace settings'
+    errorMessage.value = err?.data?.message || 'Failed to update workspace settings'
   } finally {
     saving.value = false
   }

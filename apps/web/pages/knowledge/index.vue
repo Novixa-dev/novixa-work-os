@@ -65,7 +65,7 @@ async function fetchPages() {
     if (searchQuery.value) params.search = searchQuery.value
 
     const res = await api.get('/knowledge', { params })
-    pages.value = res.data?.data || []
+    pages.value = (Array.isArray(res.data) ? res.data : [])
 
     if (pages.value.length > 0 && !selectedPage.value) {
       selectedPage.value = pages.value[0]
@@ -105,11 +105,11 @@ async function handleCreatePage() {
     const res = await api.post('/knowledge', pageForm.value)
     showCreateModal.value = false
     await fetchPages()
-    if (res.data?.page) {
-      selectedPage.value = res.data.page
+    if (res.page) {
+      selectedPage.value = res.page
     }
   } catch (err: any) {
-    formError.value = err.response?.data?.message || 'Failed to create page'
+    formError.value = err?.data?.message || 'Failed to create page'
   } finally {
     submitting.value = false
   }

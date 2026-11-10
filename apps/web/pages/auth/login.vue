@@ -33,6 +33,7 @@
           <!-- Error alert -->
           <div
             v-if="errorMessage"
+            role="alert"
             class="p-3 rounded-xl bg-rose-950/40 border border-rose-900/60 text-rose-300 text-xs flex items-center gap-2"
           >
             <svg class="w-4 h-4 shrink-0 text-rose-400" viewBox="0 0 20 20" fill="currentColor">
@@ -50,6 +51,9 @@
               v-model="email"
               type="email"
               required
+              autocomplete="username"
+              autofocus
+              inputmode="email"
               class="block w-full text-sm rounded-lg px-3.5 py-2.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue"
               placeholder="name@novixa.dev"
             />
@@ -59,13 +63,24 @@
             <label for="password" class="block text-xs font-semibold text-slate-300 mb-1.5">
               {{ isRtl ? 'كلمة المرور' : 'Password' }}
             </label>
-            <input
-              id="password"
-              v-model="password"
-              type="password"
-              required
-              class="block w-full text-sm rounded-lg px-3.5 py-2.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue"
-            />
+            <div class="relative">
+              <input
+                id="password"
+                v-model="password"
+                :type="showPassword ? 'text' : 'password'"
+                required
+                autocomplete="current-password"
+                class="block w-full text-sm rounded-lg ps-3.5 pe-16 py-2.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue"
+              />
+              <button
+                type="button"
+                class="absolute inset-y-0 end-0 px-3 text-[11px] font-semibold text-slate-400 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue rounded-e-lg"
+                :aria-pressed="showPassword"
+                @click="showPassword = !showPassword"
+              >
+                {{ showPassword ? (isRtl ? 'إخفاء' : 'Hide') : (isRtl ? 'إظهار' : 'Show') }}
+              </button>
+            </div>
           </div>
 
           <div class="pt-2">
@@ -83,8 +98,9 @@
           </div>
         </form>
 
+        <!-- Quick demo logins: development builds only, never shipped to production -->
         <!-- Quick Demo Switcher -->
-        <div class="mt-6 pt-6 border-t border-slate-800">
+        <div v-if="isDev" class="mt-6 pt-6 border-t border-slate-800">
           <p class="text-[11px] font-semibold text-slate-400 mb-2.5 text-center uppercase tracking-wider">
             {{ isRtl ? 'حسابات التجربة السريعة (اختر للتعبئة التلقائية):' : 'Quick Demo Logins:' }}
           </p>
@@ -139,9 +155,12 @@ definePageMeta({
 const { isRtl, locale, setLocale } = useI18n()
 const { login } = useAuth()
 const router = useRouter()
+const route = useRoute()
 
-const email = ref('ahmed@novixa.dev')
-const password = ref('password123')
+const isDev = import.meta.dev
+const email = ref(isDev ? 'ahmed@novixa.dev' : '')
+const password = ref(isDev ? 'password123' : '')
+const showPassword = ref(false)
 const loading = ref(false)
 const errorMessage = ref('')
 
@@ -161,7 +180,8 @@ async function handleLogin() {
 
   try {
     await login(email.value, password.value)
-    router.push('/dashboard')
+    const redirect = route.query.redirect
+    router.push(typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/dashboard')
   } catch (err: any) {
     if (err?.data?.message) {
       errorMessage.value = err.data.message

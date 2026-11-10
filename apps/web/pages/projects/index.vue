@@ -84,7 +84,7 @@ async function fetchProjects() {
     if (searchQuery.value) params.search = searchQuery.value
 
     const res = await api.get('/projects', { params })
-    projects.value = res.data?.data || []
+    projects.value = (Array.isArray(res.data) ? res.data : [])
   } catch (err) {
     console.error('Failed to load projects', err)
   } finally {
@@ -99,9 +99,9 @@ async function fetchAuxData() {
       api.get('/products'),
       api.get('/clients')
     ])
-    usersList.value = uRes.data?.data || []
-    productsList.value = pRes.data?.data || []
-    clientsList.value = cRes.data?.data || []
+    usersList.value = (Array.isArray(uRes.data) ? uRes.data : [])
+    productsList.value = (Array.isArray(pRes.data) ? pRes.data : [])
+    clientsList.value = (Array.isArray(cRes.data) ? cRes.data : [])
   } catch (err) {
     console.error('Failed to load aux data', err)
   }
@@ -144,7 +144,7 @@ async function handleCreateProject() {
     showCreateModal.value = false
     await fetchProjects()
   } catch (err: any) {
-    formError.value = err.response?.data?.message || 'Failed to save project'
+    formError.value = err?.data?.message || 'Failed to save project'
   } finally {
     submitting.value = false
   }

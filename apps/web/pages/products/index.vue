@@ -72,7 +72,7 @@ async function fetchProducts() {
     if (searchQuery.value) params.search = searchQuery.value
 
     const res = await api.get('/products', { params })
-    products.value = res.data?.data || []
+    products.value = (Array.isArray(res.data) ? res.data : [])
   } catch (err) {
     console.error('Failed to load products', err)
   } finally {
@@ -83,7 +83,7 @@ async function fetchProducts() {
 async function fetchUsers() {
   try {
     const res = await api.get('/users')
-    usersList.value = res.data?.data || []
+    usersList.value = (Array.isArray(res.data) ? res.data : [])
   } catch (err) {
     console.error('Failed to load users', err)
   }
@@ -128,7 +128,7 @@ async function handleCreateProduct() {
     showCreateModal.value = false
     await fetchProducts()
   } catch (err: any) {
-    formError.value = err.response?.data?.message || 'Failed to create product'
+    formError.value = err?.data?.message || 'Failed to create product'
   } finally {
     submitting.value = false
   }
@@ -141,8 +141,8 @@ async function viewLinkedWork(product: any) {
   try {
     const res = await api.get(`/products/${product.id}/work`)
     productWork.value = {
-      projects: res.data?.projects || [],
-      tasks: res.data?.tasks || []
+      projects: res.projects || [],
+      tasks: res.tasks || []
     }
   } catch (err) {
     console.error('Failed to load product work', err)

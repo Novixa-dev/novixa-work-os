@@ -17,7 +17,9 @@
       />
 
       <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-        <slot />
+        <div :key="refreshKey">
+          <slot />
+        </div>
       </main>
     </div>
 
@@ -37,9 +39,8 @@ import QuickCreateModal from '~/components/layout/QuickCreateModal.vue'
 
 const { initLocale } = useI18n()
 const { initTheme } = useTheme()
-const { initAuth, isAuthenticated } = useAuth()
 const api = useApi()
-const router = useRouter()
+const refreshKey = ref(0)
 
 const mobileOpen = ref(false)
 const searchOpen = ref(false)
@@ -50,12 +51,6 @@ const unreadNotificationsCount = ref(0)
 onMounted(async () => {
   initLocale()
   initTheme()
-  await initAuth()
-
-  if (!isAuthenticated.value) {
-    router.push('/auth/login')
-    return
-  }
 
   fetchNotificationCount()
 
@@ -87,13 +82,14 @@ function handleGlobalKeydown(e: KeyboardEvent) {
 
 async function fetchNotificationCount() {
   try {
-    const res = await api.get<{ unread_count: number }>('/notifications')
+    const res = await api.get<{ unread_count: number }>('/notifications', { silent: true })
     unreadNotificationsCount.value = res.unread_count || 0
   } catch (e) {}
 }
 
 function handleQuickCreated() {
-  // Reload current route data
-  router.go(0)
+  // Remount the current page so it refetches its data (no full browser reload).
+  refreshKey.value++
+  fetchNotificationCount()
 }
 </script>

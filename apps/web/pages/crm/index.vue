@@ -119,10 +119,10 @@ async function fetchData() {
       api.get('/users'),
       api.get('/products'),
     ])
-    clients.value = cRes.data?.data || []
-    opportunities.value = oRes.data?.data || []
-    usersList.value = uRes.data?.data || []
-    productsList.value = pRes.data?.data || []
+    clients.value = (Array.isArray(cRes.data) ? cRes.data : [])
+    opportunities.value = (Array.isArray(oRes.data) ? oRes.data : [])
+    usersList.value = (Array.isArray(uRes.data) ? uRes.data : [])
+    productsList.value = (Array.isArray(pRes.data) ? pRes.data : [])
   } catch (err) {
     console.error('Failed to load CRM data', err)
   } finally {
@@ -175,7 +175,7 @@ async function handleCreateClient() {
     showClientModal.value = false
     await fetchData()
   } catch (err: any) {
-    formError.value = err.response?.data?.message || 'Failed to save client'
+    formError.value = err?.data?.message || 'Failed to save client'
   } finally {
     submitting.value = false
   }
@@ -218,7 +218,7 @@ async function handleCreateOpp() {
     showOppModal.value = false
     await fetchData()
   } catch (err: any) {
-    formError.value = err.response?.data?.message || 'Failed to create opportunity'
+    formError.value = err?.data?.message || 'Failed to create opportunity'
   } finally {
     submitting.value = false
   }
@@ -252,11 +252,11 @@ async function handleConvertWonDeal() {
     const res = await api.post(`/opportunities/${selectedOpp.value.id}/convert-to-project`, convertForm.value)
     showConvertModal.value = false
     await fetchData()
-    if (res.data?.project?.id) {
+    if (res.project?.id) {
       router.push({ path: '/projects' })
     }
   } catch (err: any) {
-    formError.value = err.response?.data?.message || 'Failed to convert deal to project'
+    formError.value = err?.data?.message || 'Failed to convert deal to project'
   } finally {
     submitting.value = false
   }
@@ -274,7 +274,7 @@ async function openInteractionHistory(client: any) {
   }
   try {
     const res = await api.get(`/clients/${client.id}/interactions`)
-    clientInteractions.value = res.data?.data || []
+    clientInteractions.value = (Array.isArray(res.data) ? res.data : [])
   } catch (err) {
     console.error('Failed to load interactions', err)
   } finally {
@@ -289,7 +289,7 @@ async function handleAddInteraction() {
     await api.post(`/clients/${selectedClient.value.id}/interactions`, interactionForm.value)
     interactionForm.value.notes = ''
     const res = await api.get(`/clients/${selectedClient.value.id}/interactions`)
-    clientInteractions.value = res.data?.data || []
+    clientInteractions.value = (Array.isArray(res.data) ? res.data : [])
     await fetchData()
   } catch (err) {
     console.error('Failed to add interaction', err)
