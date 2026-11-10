@@ -25,6 +25,9 @@
       </div>
     </div>
 
+    <!-- First-run onboarding: only while the workspace has no work in it yet -->
+    <DashboardGettingStarted v-if="!loading && isEmptyWorkspace" />
+
     <!-- Loading Skeleton -->
     <div v-if="loading" class="grid grid-cols-2 lg:grid-cols-5 gap-4">
       <div v-for="i in 5" :key="i" class="h-24 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl animate-pulse" />
@@ -189,7 +192,11 @@
           </NuxtLink>
         </template>
 
-        <div class="space-y-3.5">
+        <div v-if="activeProjects.length === 0" class="py-8 text-center text-xs text-slate-400">
+          {{ isRtl ? 'لا توجد مشاريع نشطة بعد.' : 'No active projects yet.' }}
+          <NuxtLink to="/projects" class="text-brand-blue hover:underline">{{ isRtl ? 'أنشئ مشروعاً' : 'Create one' }}</NuxtLink>
+        </div>
+        <div v-else class="space-y-3.5">
           <div
             v-for="project in activeProjects"
             :key="project.id"
@@ -300,6 +307,16 @@ const metrics = ref<any>({
 })
 
 const myDayTasks = ref<any[]>([])
+const isEmptyWorkspace = computed(
+  () =>
+    !metrics.value.active_projects &&
+    !metrics.value.pending_tasks &&
+    !metrics.value.overdue_tasks &&
+    activeProjects.value.length === 0 &&
+    myDayTasks.value.length === 0 &&
+    overdueTasks.value.length === 0 &&
+    followUps.value.length === 0,
+)
 const overdueTasks = ref<any[]>([])
 const activeProjects = ref<any[]>([])
 const followUps = ref<any[]>([])

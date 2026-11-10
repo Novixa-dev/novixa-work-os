@@ -184,9 +184,9 @@ async function handleLogin() {
     router.push(typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/dashboard')
   } catch (err: any) {
     if (err?.data?.message) {
-      errorMessage.value = err.data.message
+      errorMessage.value = pickLocalizedMessage(err.data.message, isRtl.value)
     } else if (err?.data?.errors?.email) {
-      errorMessage.value = err.data.errors.email[0]
+      errorMessage.value = pickLocalizedMessage(err.data.errors.email[0], isRtl.value)
     } else {
       errorMessage.value = isRtl.value
         ? 'تعذر تسجيل الدخول. يرجى التحقق من صحة البيانات.'

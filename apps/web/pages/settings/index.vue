@@ -32,6 +32,7 @@ import UiModal from '~/components/ui/UiModal.vue'
 const { t, locale, setLocale, isRtl } = useI18n()
 const { theme, setTheme } = useTheme()
 const api = useApi()
+const { confirm } = useConfirm()
 const auth = useAuth()
 
 const activeTab = ref<'profile' | 'team' | 'workspace'>('profile')
@@ -120,6 +121,15 @@ async function loadTeam() {
 }
 
 async function toggleUserActive(u: any) {
+  if (u.is_active) {
+    const ok = await confirm({
+      title: isRtl.value ? 'تعطيل هذا الحساب؟' : 'Deactivate this account?',
+      message: isRtl.value ? 'لن يتمكن المستخدم من تسجيل الدخول حتى تعيد تفعيله.' : 'The user will not be able to sign in until you reactivate the account.',
+      confirmLabel: isRtl.value ? 'تعطيل' : 'Deactivate',
+      danger: true,
+    })
+    if (!ok) return
+  }
   // The API toasts success/failure itself; only flip the local state when it succeeded.
   try {
     await api.patch(`/users/${u.id}/toggle-active`)

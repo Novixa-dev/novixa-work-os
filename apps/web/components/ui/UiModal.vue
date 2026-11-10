@@ -11,7 +11,8 @@
       <div
         v-if="modelValue"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
-        @keydown.esc="close"
+        @keydown.esc.stop="close"
+        @keydown.tab="trapFocus"
       >
         <!-- Backdrop -->
         <div
@@ -21,6 +22,11 @@
 
         <!-- Dialog Container -->
         <div
+          ref="dialogEl"
+          role="dialog"
+          aria-modal="true"
+          :aria-labelledby="titleId"
+          tabindex="-1"
           class="relative w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-10 overflow-hidden transform transition-all my-8"
           :class="maxWidthClasses[maxWidth]"
         >
@@ -31,16 +37,16 @@
           >
             <slot name="header">
               <div>
-                <h3 class="text-base font-semibold text-slate-900 dark:text-slate-100">{{ title }}</h3>
+                <h3 :id="titleId" class="text-base font-semibold text-slate-900 dark:text-slate-100">{{ title }}</h3>
                 <p v-if="subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ subtitle }}</p>
               </div>
             </slot>
             <button
               type="button"
-              class="rounded-lg p-1 text-slate-400 hover:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none"
+              class="rounded-lg p-1 text-slate-400 hover:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
               @click="close"
             >
-              <span class="sr-only">Close</span>
+              <span class="sr-only">{{ isRtl ? 'إغلاق' : 'Close' }}</span>
               <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
               </svg>
@@ -82,10 +88,53 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
+const { isRtl } = useI18n()
+const titleId = `modal-title-${useId()}`
+const dialogEl = ref<HTMLElement | null>(null)
+let previouslyFocused: HTMLElement | null = null
+
+const FOCUSABLE = 'a[href],button:not([disabled]),textarea:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'
+
 function close() {
   emit('update:modelValue', false)
   emit('close')
 }
+
+// Keep Tab / Shift+Tab inside the dialog while it is open.
+function trapFocus(e: KeyboardEvent) {
+  const nodes = dialogEl.value?.querySelectorAll<HTMLElement>(FOCUSABLE)
+  if (!nodes || nodes.length === 0) return
+  const first = nodes[0]
+  const last = nodes[nodes.length - 1]
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault()
+    last.focus()
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault()
+    first.focus()
+  }
+}
+
+watch(
+  () => props.modelValue,
+  async (open) => {
+    if (!import.meta.client) return
+    if (open) {
+      previouslyFocused = document.activeElement as HTMLElement | null
+      document.body.style.overflow = 'hidden'
+      await nextTick()
+      const firstField = dialogEl.value?.querySelector<HTMLElement>('input:not([disabled]),textarea,select')
+      ;(firstField ?? dialogEl.value)?.focus()
+    } else {
+      document.body.style.overflow = ''
+      previouslyFocused?.focus?.()
+    }
+  },
+)
+
+onBeforeUnmount(() => {
+  if (import.meta.client) document.body.style.overflow = ''
+})
 
 const maxWidthClasses = {
   sm: 'max-w-sm',

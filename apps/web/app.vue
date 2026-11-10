@@ -4,6 +4,7 @@
       <NuxtPage />
     </NuxtLayout>
     <UiToaster />
+    <UiConfirmDialog />
   </div>
 </template>
 

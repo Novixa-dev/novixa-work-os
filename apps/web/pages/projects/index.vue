@@ -31,6 +31,7 @@ import UiModal from '~/components/ui/UiModal.vue'
 
 const { t, locale, isRtl } = useI18n()
 const api = useApi()
+const { confirm } = useConfirm()
 const auth = useAuth()
 const router = useRouter()
 
@@ -175,6 +176,16 @@ async function handleAddMilestone() {
 }
 
 async function toggleArchiveProject(project: any) {
+  const archiving = project.status !== 'archived'
+  const ok = await confirm({
+    title: archiving
+      ? (isRtl.value ? 'أرشفة المشروع؟' : 'Archive this project?')
+      : (isRtl.value ? 'استعادة المشروع؟' : 'Restore this project?'),
+    message: isRtl.value ? project.name_ar : project.name_en || project.name_ar,
+    confirmLabel: archiving ? (isRtl.value ? 'أرشفة' : 'Archive') : (isRtl.value ? 'استعادة' : 'Restore'),
+    danger: archiving,
+  })
+  if (!ok) return
   try {
     await api.patch(`/projects/${project.id}/archive`)
     await fetchProjects()

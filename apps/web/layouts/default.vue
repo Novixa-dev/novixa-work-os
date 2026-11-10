@@ -41,6 +41,24 @@ const { initLocale } = useI18n()
 const { initTheme } = useTheme()
 const api = useApi()
 const refreshKey = ref(0)
+const route = useRoute()
+const { t } = useI18n()
+
+// Keep the browser tab / history titles meaningful per page (also read by screen readers).
+const titleKeys: Record<string, string> = {
+  '/dashboard': 'nav.dashboard',
+  '/my-work': 'nav.my_work',
+  '/tasks': 'nav.tasks',
+  '/projects': 'nav.projects',
+  '/products': 'nav.products',
+  '/crm': 'nav.crm',
+  '/knowledge': 'nav.knowledge',
+  '/settings': 'nav.settings',
+}
+watchEffect(() => {
+  const key = titleKeys[route.path.replace(/\/$/, '')]
+  if (import.meta.client && key) document.title = `${t(key)} | Novixa WorkOS`
+})
 
 const mobileOpen = ref(false)
 const searchOpen = ref(false)
