@@ -7,6 +7,7 @@ use App\Models\AuditLog;
 use App\Models\Client;
 use App\Modules\CRM\Resources\ClientResource;
 use App\Support\Like;
+use App\Support\Pagination;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -38,7 +39,7 @@ class ClientController extends Controller
             });
         }
 
-        $clients = $query->orderBy('name_ar')->paginate($request->input('per_page', 25));
+        $clients = $query->orderBy('name_ar')->paginate(Pagination::perPage($request, 25));
 
         return response()->json([
             'data' => ClientResource::collection($clients->items()),

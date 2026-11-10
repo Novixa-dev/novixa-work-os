@@ -82,7 +82,7 @@ async function fetchProducts() {
 
 async function fetchUsers() {
   try {
-    const res = await api.get('/users')
+    const res = await api.get('/users?per_page=100')
     usersList.value = (Array.isArray(res.data) ? res.data : [])
   } catch (err) {
     console.error('Failed to load users', err)

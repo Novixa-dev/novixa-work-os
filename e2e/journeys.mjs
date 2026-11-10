@@ -52,8 +52,8 @@ try {
   await page.waitForSelector('[role="dialog"]', { timeout: 5000 })
   check(await page.evaluate(() => !!document.activeElement?.closest('[role="dialog"]')), 'a11y: focus moves into the dialog')
   await page.keyboard.press('Escape')
-  await page.waitForTimeout(400)
-  check((await page.locator('[role="dialog"]').count()) === 0, 'a11y: Escape closes the dialog')
+  const closed = await page.waitForSelector('[role="dialog"]', { state: 'detached', timeout: 3000 }).then(() => true, () => false)
+  check(closed, 'a11y: Escape closes the dialog')
 
   check(pageErrors.length === 0, `no uncaught page errors${pageErrors.length ? ': ' + pageErrors[0] : ''}`)
 } finally {

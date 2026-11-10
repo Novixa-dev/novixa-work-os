@@ -95,4 +95,19 @@ class SecurityHardeningTest extends TestCase
             ->assertOk()
             ->assertJsonPath('results', []);
     }
+
+    public function test_per_page_is_clamped_to_a_sane_maximum(): void
+    {
+        $user = User::where('role', 'owner')->first();
+
+        $this->actingAs($user)
+            ->getJson('/api/v1/tasks?per_page=100000')
+            ->assertOk()
+            ->assertJsonPath('meta.per_page', 100);
+
+        $this->actingAs($user)
+            ->getJson('/api/v1/tasks?per_page=-5')
+            ->assertOk()
+            ->assertJsonPath('meta.per_page', 1);
+    }
 }

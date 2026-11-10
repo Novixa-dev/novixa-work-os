@@ -187,6 +187,8 @@
       </div>
     </div>
 
+    <UiLoadMore :shown="tasks.length" :total="tasksTotal" :loading="loadingMore" @more="loadMoreTasks" />
+
     <!-- Task Detail Drawer (Slide-over) -->
     <Teleport to="body">
       <div v-if="selectedTask" class="fixed inset-0 z-50 overflow-hidden" @keydown.esc="closeDrawer">
@@ -486,19 +488,41 @@ onMounted(async () => {
   }
 })
 
+const tasksTotal = ref(0)
+const tasksPage = ref(1)
+const loadingMore = ref(false)
+
+function taskQueryUrl(page: number) {
+  let url = `/tasks?page=${page}&per_page=50&`
+  if (searchQuery.value) url += `search=${encodeURIComponent(searchQuery.value)}&`
+  if (filterStatus.value) url += `status=${filterStatus.value}&`
+  if (filterPriority.value) url += `priority=${filterPriority.value}&`
+  return url
+}
+
 async function loadTasks() {
   loading.value = true
   try {
-    let url = '/tasks?'
-    if (searchQuery.value) url += `search=${encodeURIComponent(searchQuery.value)}&`
-    if (filterStatus.value) url += `status=${filterStatus.value}&`
-    if (filterPriority.value) url += `priority=${filterPriority.value}&`
-
-    const res = await api.get<{ data: any[] }>(url)
+    const res = await api.get<{ data: any[]; meta?: { total: number } }>(taskQueryUrl(1))
     tasks.value = res.data || []
+    tasksTotal.value = res.meta?.total ?? tasks.value.length
+    tasksPage.value = 1
   } catch (e) {
   } finally {
     loading.value = false
+  }
+}
+
+async function loadMoreTasks() {
+  loadingMore.value = true
+  try {
+    const res = await api.get<{ data: any[]; meta?: { total: number } }>(taskQueryUrl(tasksPage.value + 1))
+    tasks.value = [...tasks.value, ...(res.data || [])]
+    tasksTotal.value = res.meta?.total ?? tasksTotal.value
+    tasksPage.value++
+  } catch (e) {
+  } finally {
+    loadingMore.value = false
   }
 }
 

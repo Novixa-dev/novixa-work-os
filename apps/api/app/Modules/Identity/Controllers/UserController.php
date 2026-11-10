@@ -9,6 +9,7 @@ use App\Modules\Identity\Requests\UserCreateRequest;
 use App\Modules\Identity\Requests\UserUpdateRequest;
 use App\Modules\Identity\Resources\UserResource;
 use App\Support\Like;
+use App\Support\Pagination;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -38,7 +39,7 @@ class UserController extends Controller
             $query->where('is_active', filter_var($request->input('active'), FILTER_VALIDATE_BOOLEAN));
         }
 
-        $users = $query->orderBy('name')->paginate($request->input('per_page', 25));
+        $users = $query->orderBy('name')->paginate(Pagination::perPage($request, 25));
 
         return response()->json([
             'data' => UserResource::collection($users->items()),

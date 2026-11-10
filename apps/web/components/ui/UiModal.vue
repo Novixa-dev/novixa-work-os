@@ -11,7 +11,6 @@
       <div
         v-if="modelValue"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
-        @keydown.esc.stop="close"
         @keydown.tab="trapFocus"
       >
         <!-- Backdrop -->
@@ -93,6 +92,16 @@ const titleId = `modal-title-${useId()}`
 const dialogEl = ref<HTMLElement | null>(null)
 let previouslyFocused: HTMLElement | null = null
 
+// Escape is handled at document level (focus may not be inside the dialog yet),
+// and only by the top-most open modal so stacked dialogs close one at a time.
+const modalStack: string[] = (globalThis as any).__modalStack ??= []
+function onDocumentKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape' && modalStack[modalStack.length - 1] === titleId) {
+    e.stopPropagation()
+    close()
+  }
+}
+
 const FOCUSABLE = 'a[href],button:not([disabled]),textarea:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'
 
 function close() {
@@ -122,18 +131,27 @@ watch(
     if (open) {
       previouslyFocused = document.activeElement as HTMLElement | null
       document.body.style.overflow = 'hidden'
+      modalStack.push(titleId)
+      document.addEventListener('keydown', onDocumentKeydown)
       await nextTick()
       const firstField = dialogEl.value?.querySelector<HTMLElement>('input:not([disabled]),textarea,select')
       ;(firstField ?? dialogEl.value)?.focus()
     } else {
-      document.body.style.overflow = ''
+      release()
       previouslyFocused?.focus?.()
     }
   },
 )
 
+function release() {
+  const i = modalStack.indexOf(titleId)
+  if (i >= 0) modalStack.splice(i, 1)
+  document.removeEventListener('keydown', onDocumentKeydown)
+  if (modalStack.length === 0) document.body.style.overflow = ''
+}
+
 onBeforeUnmount(() => {
-  if (import.meta.client) document.body.style.overflow = ''
+  if (import.meta.client) release()
 })
 
 const maxWidthClasses = {

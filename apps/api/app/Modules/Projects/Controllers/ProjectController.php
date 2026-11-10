@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Modules\Projects\Requests\ProjectStoreRequest;
 use App\Modules\Projects\Resources\ProjectResource;
 use App\Support\Like;
+use App\Support\Pagination;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -50,7 +51,7 @@ class ProjectController extends Controller
             });
         }
 
-        $projects = $query->orderBy('priority', 'desc')->orderBy('created_at', 'desc')->paginate($request->input('per_page', 20));
+        $projects = $query->orderBy('priority', 'desc')->orderBy('created_at', 'desc')->paginate(Pagination::perPage($request, 20));
 
         return response()->json([
             'data' => ProjectResource::collection($projects->items()),

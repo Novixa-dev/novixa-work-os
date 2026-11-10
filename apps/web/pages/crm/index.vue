@@ -114,9 +114,9 @@ async function fetchData() {
   loading.value = true
   try {
     const [cRes, oRes, uRes, pRes] = await Promise.all([
-      api.get('/clients'),
+      api.get('/clients?per_page=100'),
       api.get('/opportunities'),
-      api.get('/users'),
+      api.get('/users?per_page=100'),
       api.get('/products'),
     ])
     clients.value = (Array.isArray(cRes.data) ? cRes.data : [])

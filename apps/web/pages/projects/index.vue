@@ -76,20 +76,43 @@ const usersList = ref<any[]>([])
 const productsList = ref<any[]>([])
 const clientsList = ref<any[]>([])
 
+const projectsTotal = ref(0)
+const projectsPage = ref(1)
+const loadingMore = ref(false)
+
+function projectParams(page: number) {
+  const params: any = { page, per_page: 30 }
+  if (selectedStatus.value) params.status = selectedStatus.value
+  if (selectedType.value) params.type = selectedType.value
+  if (searchQuery.value) params.search = searchQuery.value
+  return params
+}
+
 async function fetchProjects() {
   loading.value = true
   try {
-    const params: any = {}
-    if (selectedStatus.value) params.status = selectedStatus.value
-    if (selectedType.value) params.type = selectedType.value
-    if (searchQuery.value) params.search = searchQuery.value
-
-    const res = await api.get('/projects', { params })
-    projects.value = (Array.isArray(res.data) ? res.data : [])
+    const res = await api.get('/projects', { params: projectParams(1) })
+    projects.value = Array.isArray(res.data) ? res.data : []
+    projectsTotal.value = res.meta?.total ?? projects.value.length
+    projectsPage.value = 1
   } catch (err) {
     console.error('Failed to load projects', err)
   } finally {
     loading.value = false
+  }
+}
+
+async function loadMoreProjects() {
+  loadingMore.value = true
+  try {
+    const res = await api.get('/projects', { params: projectParams(projectsPage.value + 1) })
+    projects.value = [...projects.value, ...(Array.isArray(res.data) ? res.data : [])]
+    projectsTotal.value = res.meta?.total ?? projectsTotal.value
+    projectsPage.value++
+  } catch (err) {
+    console.error('Failed to load more projects', err)
+  } finally {
+    loadingMore.value = false
   }
 }
 
@@ -546,6 +569,8 @@ onMounted(async () => {
         </table>
       </div>
     </div>
+
+    <UiLoadMore :shown="projects.length" :total="projectsTotal" :loading="loadingMore" @more="loadMoreProjects" />
 
     <!-- Create Project Modal -->
     <UiModal
