@@ -20,6 +20,11 @@ This document maintains a living, timestamped record of implementation progress,
 
 ## Chronological Progress Entries
 
+### 2026-11-11: UX & quality review pass
+- Real-browser review against seeded data found list pages rendering empty, undefined `primary` palette, auth-guard race and demo credentials on the production login page — all fixed and covered by `e2e/journeys.mjs` (CI job `e2e`, gates deploys).
+- New UX: toasts, confirm dialogs, accessible modals, onboarding checklist, load-more pagination, page titles, localized errors.
+- Tests: API 23 (93 assertions), Web 23, E2E journeys 11 checks.
+
 ### 2026-11-09: Production deployment
 - Live at https://novixa-work-os.novixa.dev (public bilingual company page `/`, workspace `/app/`, API `/api/v1`).
 - New production stack (`docker/api`, `docker/web`, `deploy/`) behind mailcow nginx + Cloudflare; GitHub Actions `Deploy` (build → GHCR → SSH rollout → health check/rollback → curl + Chrome smoke tests); nightly DB backups; first-run owner command `workos:create-owner`.

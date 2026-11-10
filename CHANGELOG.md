@@ -2,6 +2,15 @@
 
 يتبع [Keep a Changelog](https://keepachangelog.com/) و[Semantic Versioning](https://semver.org/).
 
+## [1.3.0] — 2026-11-11
+### Fixed
+- Projects, products, CRM, knowledge and settings lists rendered empty (wrong response shape); `primary-*` colors were undefined (invisible progress bars); inline API errors read the wrong field.
+- Auth guard ran after pages mounted (401 race); API is now token-only (no CSRF 419 for SPA).
+- Demo credentials were pre-filled/shown on the production login page (now dev-only).
+### Added
+- Toast feedback for every mutation/error, confirm dialogs (archive project, deactivate user), accessible modals (focus trap/restore, Escape, scroll lock), first-run onboarding checklist, per-page titles, password show/hide, login redirect, "Load more" pagination.
+- API `per_page` clamped to 1..100; seeded Chrome journey tests (CI job `e2e`).
+
 ## [1.2.0] — 2026-11-09
 
 ### Security
