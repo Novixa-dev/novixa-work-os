@@ -57,6 +57,10 @@ class TaskController extends Controller
             $query->where('assignee_id', $request->input('assignee_id'));
         }
 
+        if ($request->boolean('unassigned')) {
+            $query->whereNull('assignee_id')->whereNotIn('status', ['done', 'cancelled']);
+        }
+
         if ($request->boolean('is_my_day')) {
             $query->where('is_my_day', true);
         }
@@ -295,6 +299,74 @@ class TaskController extends Controller
         return response()->json([
             'message' => 'تم تحديث حالة المهمة بنجاح',
             'task' => new TaskResource($task),
+        ]);
+    }
+
+    /**
+     * Take a task so teammates can see it is being worked on (prevents duplicate work).
+     * Atomic: only succeeds when the task is unassigned or already mine; otherwise 409 naming the owner.
+     */
+    public function claim(Request $request, Task $task): JsonResponse
+    {
+        $this->authorize('view', $task);
+        $user = $request->user();
+        abort_unless($user->is_active && ! $user->isGuest(), 403);
+
+        if (in_array($task->status, ['done', 'cancelled'], true)) {
+            return response()->json(['message' => 'لا يمكن استلام مهمة مغلقة / Cannot take a closed task'], 422);
+        }
+
+        $claimed = Task::query()
+            ->whereKey($task->id)
+            ->where(fn ($q) => $q->whereNull('assignee_id')->orWhere('assignee_id', $user->id))
+            ->update([
+                'assignee_id' => $user->id,
+                'status' => in_array($task->status, ['backlog', 'todo'], true) ? 'in_progress' : $task->status,
+                'claimed_at' => $task->assignee_id === $user->id && $task->claimed_at ? $task->claimed_at : now(),
+            ]);
+
+        if ($claimed === 0) {
+            $owner = Task::with('assignee')->find($task->id)?->assignee;
+            $ownerName = $owner ? $owner->name : '—';
+
+            return response()->json([
+                'message' => "المهمة مستلمة بالفعل من {$ownerName} / Already taken by {$ownerName}",
+                'assignee' => $owner ? ['id' => $owner->id, 'name' => $owner->name] : null,
+            ], 409);
+        }
+
+        $task->refresh()->load(['project', 'assignee', 'reporter', 'labels']);
+
+        if ($task->reporter_id && $task->reporter_id !== $user->id) {
+            Notification::create([
+                'user_id' => $task->reporter_id,
+                'type' => 'task.claimed',
+                'title_ar' => "بدأ {$user->name} العمل على {$task->code}",
+                'title_en' => "{$user->name} started working on {$task->code}",
+                'link' => "/tasks?code={$task->code}",
+            ]);
+        }
+        AuditLog::log('task.claimed', $task, ['assignee_id' => $user->id]);
+
+        return response()->json(['message' => 'تم استلام المهمة / Task taken', 'task' => new TaskResource($task)]);
+    }
+
+    /** Give a task back to the pool (assignee, manager or admin). */
+    public function release(Request $request, Task $task): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($user->isAdmin() || $user->isManager() || $task->assignee_id === $user->id, 403);
+
+        $task->update([
+            'assignee_id' => null,
+            'claimed_at' => null,
+            'status' => $task->status === 'in_progress' ? 'todo' : $task->status,
+        ]);
+        AuditLog::log('task.released', $task, []);
+
+        return response()->json([
+            'message' => 'أُعيدت المهمة للقائمة / Task released',
+            'task' => new TaskResource($task->load(['project', 'assignee', 'reporter', 'labels'])),
         ]);
     }
 

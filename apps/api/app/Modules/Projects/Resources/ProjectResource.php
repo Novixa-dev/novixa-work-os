@@ -38,6 +38,7 @@ class ProjectResource extends JsonResource
                 'name_en' => $this->client->name_en,
             ]),
             'members' => $this->whenLoaded('members', fn () => UserResource::collection($this->members)),
+            'links' => $this->whenLoaded('links'),
             'milestones' => $this->whenLoaded('milestones'),
             'tasks_count' => $this->whenCounted('tasks'),
             'start_date' => $this->start_date?->format('Y-m-d'),

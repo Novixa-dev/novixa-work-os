@@ -83,6 +83,16 @@
           @change="loadTasks"
         />
       </div>
+
+      <button
+        type="button"
+        :aria-pressed="onlyUnassigned"
+        class="px-3 py-2 text-xs font-semibold rounded-lg border transition-colors"
+        :class="onlyUnassigned ? 'bg-primary-600 text-white border-primary-600' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'"
+        @click="onlyUnassigned = !onlyUnassigned; loadTasks()"
+      >
+        {{ isRtl ? 'المتاحة للاستلام' : 'Available to take' }}
+      </button>
     </div>
 
     <!-- Loading State -->
@@ -115,6 +125,12 @@
                 <span v-if="task.project" class="font-medium text-brand-blue">{{ task.project.name_ar }}</span>
                 <span v-if="task.assignee" class="flex items-center gap-1 text-slate-600 dark:text-slate-400">
                   • {{ task.assignee.name }}
+                  <span v-if="task.is_taken" class="px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold">
+                    {{ isRtl ? 'قيد العمل الآن' : 'In progress' }}
+                  </span>
+                </span>
+                <span v-else class="px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-semibold">
+                  {{ isRtl ? 'متاحة' : 'Available' }}
                 </span>
                 <span v-if="task.due_date" class="tabular-nums" :class="task.is_overdue ? 'text-rose-600 font-bold' : ''">
                   • {{ task.due_date }}
@@ -178,6 +194,8 @@
             <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-[11px] text-slate-500">
               <span v-if="task.project" class="text-brand-blue truncate max-w-[120px]">{{ task.project.name_ar }}</span>
               <span v-else class="text-slate-400">{{ isRtl ? 'مستقلة' : 'Standalone' }}</span>
+              <span v-if="task.assignee" class="truncate max-w-[80px]" :title="task.assignee.name">{{ task.assignee.name }}</span>
+              <span v-else class="text-emerald-600 font-semibold">{{ isRtl ? 'متاحة' : 'Available' }}</span>
               <span v-if="task.due_date" class="tabular-nums" :class="task.is_overdue ? 'text-rose-500 font-bold' : ''">
                 {{ task.due_date }}
               </span>
@@ -257,6 +275,29 @@
                   <span class="font-semibold text-slate-800 dark:text-slate-200">
                     {{ selectedTask.assignee ? selectedTask.assignee.name : (isRtl ? 'غير معين' : 'Unassigned') }}
                   </span>
+                  <div v-if="!isGuest && !['done', 'cancelled'].includes(selectedTask.status)" class="mt-1.5">
+                    <button
+                      v-if="!selectedTask.assignee_id"
+                      type="button"
+                      class="px-2.5 py-1 text-[11px] font-semibold rounded-md bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50"
+                      :disabled="claiming"
+                      @click="claimTask"
+                    >
+                      {{ isRtl ? 'استلام المهمة' : 'Take this task' }}
+                    </button>
+                    <button
+                      v-else-if="selectedTask.assignee_id === currentUser?.id"
+                      type="button"
+                      class="px-2.5 py-1 text-[11px] font-semibold rounded-md border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50"
+                      :disabled="claiming"
+                      @click="releaseTask"
+                    >
+                      {{ isRtl ? 'إعادة للقائمة' : 'Release' }}
+                    </button>
+                    <span v-else class="text-[11px] text-blue-600 dark:text-blue-300">
+                      {{ isRtl ? 'قيد العمل بواسطة زميل — لا تكرر الجهد' : 'A teammate is on it — avoid duplicate work' }}
+                    </span>
+                  </div>
                 </div>
                 <div>
                   <span class="text-slate-400 block mb-0.5">{{ t('tasks.priority') }}</span>
@@ -415,7 +456,9 @@ import UiSelect from '~/components/ui/UiSelect.vue'
 import UiTextarea from '~/components/ui/UiTextarea.vue'
 
 const { t, isRtl } = useI18n()
-const { isGuest } = useAuth()
+const { isGuest, user: currentUser } = useAuth()
+const onlyUnassigned = ref(false)
+const claiming = ref(false)
 const api = useApi()
 const route = useRoute()
 
@@ -497,6 +540,7 @@ function taskQueryUrl(page: number) {
   if (searchQuery.value) url += `search=${encodeURIComponent(searchQuery.value)}&`
   if (filterStatus.value) url += `status=${filterStatus.value}&`
   if (filterPriority.value) url += `priority=${filterPriority.value}&`
+  if (onlyUnassigned.value) url += 'unassigned=1&'
   return url
 }
 
@@ -560,6 +604,41 @@ async function openTaskDrawer(task: any) {
 
 function closeDrawer() {
   selectedTask.value = null
+}
+
+function applyTaskUpdate(updated: any) {
+  if (!updated || !selectedTask.value) return
+  Object.assign(selectedTask.value, updated)
+  const idx = tasks.value.findIndex(x => x.id === updated.id)
+  if (idx !== -1) tasks.value[idx] = { ...tasks.value[idx], ...updated }
+}
+
+async function claimTask() {
+  if (!selectedTask.value || claiming.value) return
+  claiming.value = true
+  try {
+    const res = await api.post<{ task: any }>(`/tasks/${selectedTask.value.id}/claim`)
+    applyTaskUpdate(res.task)
+  } catch {
+    // 409 (taken by a teammate): useApi already toasted the owner's name; refresh to show the truth.
+    await openTaskDrawer(selectedTask.value)
+    await loadTasks()
+  } finally {
+    claiming.value = false
+  }
+}
+
+async function releaseTask() {
+  if (!selectedTask.value || claiming.value) return
+  claiming.value = true
+  try {
+    const res = await api.post<{ task: any }>(`/tasks/${selectedTask.value.id}/release`)
+    applyTaskUpdate(res.task)
+  } catch {
+    // error toast shown by useApi
+  } finally {
+    claiming.value = false
+  }
 }
 
 async function handleStatusChange(newStatus: string) {

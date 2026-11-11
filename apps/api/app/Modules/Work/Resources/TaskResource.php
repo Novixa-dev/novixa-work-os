@@ -50,6 +50,8 @@ class TaskResource extends JsonResource
             'is_my_day' => (bool) $this->is_my_day,
             'start_date' => $this->start_date?->format('Y-m-d'),
             'due_date' => $this->due_date?->format('Y-m-d'),
+            'claimed_at' => $this->claimed_at?->toIso8601String(),
+            'is_taken' => $this->assignee_id !== null && in_array($this->status, ['in_progress', 'in_review'], true),
             'is_overdue' => $this->due_date && $this->due_date->isPast() && $this->status !== 'done',
             'estimated_hours' => $this->estimated_hours ? (float) $this->estimated_hours : null,
             'actual_hours' => $this->actual_hours ? (float) $this->actual_hours : null,

@@ -2,6 +2,15 @@
 
 يتبع [Keep a Changelog](https://keepachangelog.com/) و[Semantic Versioning](https://semver.org/).
 
+## [1.4.0] — 2026-11-11
+
+### Added
+- **Task claiming** — `POST /tasks/{id}/claim` (atomic, 409 names who already has it) and `/release`; "In progress / Available" chips, "Available to take" filter, Take/Release buttons. Prevents two people working on the same task.
+- **Deadline reminders** — `workos:deadline-reminders` (hourly via the new `scheduler` container): due soon, due today, overdue; sent to assignee and project lead, idempotent through `notifications.dedupe_key`.
+- **Project links & notes** — `POST/DELETE /projects/{id}/links` (https-only URLs) with a Links & notes dialog on each project.
+- Reporter is notified when someone takes their task.
+- 7 new feature tests (30 total).
+
 ## [1.3.0] — 2026-11-11
 ### Fixed
 - Projects, products, CRM, knowledge and settings lists rendered empty (wrong response shape); `primary-*` colors were undefined (invisible progress bars); inline API errors read the wrong field.

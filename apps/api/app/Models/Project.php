@@ -118,6 +118,12 @@ class Project extends Model
     }
 
     /** @return HasMany<ProjectMilestone, $this> */
+    /** @return HasMany<ProjectLink, $this> */
+    public function links(): HasMany
+    {
+        return $this->hasMany(ProjectLink::class)->latest();
+    }
+
     public function milestones(): HasMany
     {
         return $this->hasMany(ProjectMilestone::class);

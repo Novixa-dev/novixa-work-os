@@ -33,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @property int $kanban_order
  * @property Carbon|null $archived_at
  * @property Carbon|null $completed_at
+ * @property Carbon|null $claimed_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read User|null $assignee
@@ -113,6 +114,7 @@ class Task extends Model
         'kanban_order',
         'archived_at',
         'completed_at',
+        'claimed_at',
     ];
 
     protected function casts(): array
@@ -121,6 +123,7 @@ class Task extends Model
             'is_my_day' => 'boolean',
             'start_date' => 'date',
             'due_date' => 'date',
+            'claimed_at' => 'datetime',
             'estimated_hours' => 'decimal:2',
             'actual_hours' => 'decimal:2',
             'kanban_order' => 'integer',

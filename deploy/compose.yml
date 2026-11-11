@@ -62,6 +62,15 @@ services:
       db: { condition: service_healthy }
     deploy: { resources: { limits: { memory: 256M } } }
 
+  # Runs the Laravel scheduler (hourly deadline reminders, token pruning).
+  scheduler:
+    <<: *api
+    container_name: novixa-work-os-scheduler
+    command: ["php", "artisan", "schedule:work"]
+    depends_on:
+      db: { condition: service_healthy }
+    deploy: { resources: { limits: { memory: 192M } } }
+
   web:
     image: ${WEB_IMAGE:-ghcr.io/novixa-dev/novixa-work-os-web}:${TAG:-latest}
     container_name: novixa-work-os-web

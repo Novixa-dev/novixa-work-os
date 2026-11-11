@@ -9,6 +9,7 @@ use App\Modules\Knowledge\Controllers\KnowledgeController;
 use App\Modules\Notify\Controllers\NotificationController;
 use App\Modules\Products\Controllers\ProductController;
 use App\Modules\Projects\Controllers\ProjectController;
+use App\Modules\Projects\Controllers\ProjectLinkController;
 use App\Modules\Shared\Controllers\DashboardController;
 use App\Modules\Shared\Controllers\SearchController;
 use App\Modules\Shared\Controllers\SettingsController;
@@ -40,11 +41,15 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('projects', ProjectController::class);
         Route::patch('projects/{project}/archive', [ProjectController::class, 'archive']);
         Route::post('projects/{project}/milestones', [ProjectController::class, 'addMilestone']);
+        Route::post('projects/{project}/links', [ProjectLinkController::class, 'store']);
+        Route::delete('projects/{project}/links/{link}', [ProjectLinkController::class, 'destroy']);
 
         // Tasks & Personal Work
         Route::get('tasks/my-work', [TaskController::class, 'myWork']);
         Route::apiResource('tasks', TaskController::class);
         Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus']);
+        Route::post('tasks/{task}/claim', [TaskController::class, 'claim']);
+        Route::post('tasks/{task}/release', [TaskController::class, 'release']);
         Route::patch('tasks/{task}/my-day', [TaskController::class, 'toggleMyDay']);
 
         // Subtasks & Dependencies

@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import {
   FolderKanban,
   Plus,
+  Link as LinkIcon,
   Search,
   Calendar,
   CheckCircle2,
@@ -45,6 +46,10 @@ const viewMode = ref<'grid' | 'table'>('grid')
 // Modals
 const showCreateModal = ref(false)
 const showMilestoneModal = ref(false)
+const showLinksModal = ref(false)
+const linksProject = ref<any>(null)
+const linkForm = ref({ title: '', url: '', note: '' })
+const linkError = ref('')
 const selectedProjectForMilestone = ref<any>(null)
 const submitting = ref(false)
 const formError = ref('')
@@ -171,6 +176,52 @@ async function handleCreateProject() {
     formError.value = err?.data?.message || 'Failed to save project'
   } finally {
     submitting.value = false
+  }
+}
+
+async function openLinks(project: any) {
+  linksProject.value = project
+  linkForm.value = { title: '', url: '', note: '' }
+  linkError.value = ''
+  showLinksModal.value = true
+  try {
+    const res = await api.get<{ project: any }>(`/projects/${project.id}`, { silent: true })
+    linksProject.value = res.project
+  } catch {
+    // keep the list data already on screen
+  }
+}
+
+async function addLink() {
+  if (!linksProject.value) return
+  linkError.value = ''
+  if (!linkForm.value.title.trim() || (!linkForm.value.url.trim() && !linkForm.value.note.trim())) {
+    linkError.value = locale.value === 'ar' ? 'أدخل عنواناً ورابطاً أو ملاحظة' : 'Enter a title and a link or a note'
+    return
+  }
+  submitting.value = true
+  try {
+    const payload = {
+      title: linkForm.value.title.trim(),
+      url: linkForm.value.url.trim() || null,
+      note: linkForm.value.note.trim() || null,
+    }
+    const res = await api.post<{ link: any }>(`/projects/${linksProject.value.id}/links`, payload)
+    linksProject.value.links = [res.link, ...(linksProject.value.links || [])]
+    linkForm.value = { title: '', url: '', note: '' }
+  } catch {
+    // validation message toasted by useApi
+  } finally {
+    submitting.value = false
+  }
+}
+
+async function removeLink(link: any) {
+  try {
+    await api.delete(`/projects/${linksProject.value.id}/links/${link.id}`)
+    linksProject.value.links = linksProject.value.links.filter((l: any) => l.id !== link.id)
+  } catch {
+    // toasted by useApi
   }
 }
 
@@ -483,6 +534,14 @@ onMounted(async () => {
               <Flag class="w-3.5 h-3.5" />
             </button>
             <button
+              type="button"
+              class="p-1 text-slate-400 hover:text-primary-600 transition-colors"
+              :title="locale === 'ar' ? 'الروابط والملاحظات' : 'Links & notes'"
+              @click="openLinks(project)"
+            >
+              <LinkIcon class="w-3.5 h-3.5" />
+            </button>
+            <button
               v-if="!auth.isGuest.value"
               type="button"
               class="p-1 text-slate-400 hover:text-amber-600 transition-colors"
@@ -573,6 +632,57 @@ onMounted(async () => {
     <UiLoadMore :shown="projects.length" :total="projectsTotal" :loading="loadingMore" @more="loadMoreProjects" />
 
     <!-- Create Project Modal -->
+    <UiModal
+      v-model="showLinksModal"
+      :title="locale === 'ar' ? 'الروابط والملاحظات' : 'Links & notes'"
+    >
+      <div class="space-y-4">
+        <p class="text-xs text-slate-500">
+          {{ linksProject ? (locale === 'ar' ? linksProject.name_ar : (linksProject.name_en || linksProject.name_ar)) : '' }}
+        </p>
+
+        <ul v-if="linksProject?.links?.length" class="space-y-2 max-h-64 overflow-y-auto">
+          <li
+            v-for="l in linksProject.links"
+            :key="l.id"
+            class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 text-xs flex items-start justify-between gap-2"
+          >
+            <div class="min-w-0">
+              <div class="font-semibold text-slate-800 dark:text-slate-100 truncate">{{ l.title }}</div>
+              <a
+                v-if="l.url"
+                :href="l.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-primary-600 hover:underline break-all"
+              >{{ l.url }}</a>
+              <p v-if="l.note" class="mt-0.5 text-slate-600 dark:text-slate-300 whitespace-pre-line">{{ l.note }}</p>
+            </div>
+            <button
+              v-if="!auth.isGuest.value"
+              type="button"
+              class="text-slate-400 hover:text-rose-600 shrink-0"
+              :aria-label="locale === 'ar' ? 'حذف' : 'Delete'"
+              @click="removeLink(l)"
+            >
+              ×
+            </button>
+          </li>
+        </ul>
+        <p v-else class="text-xs text-slate-400">
+          {{ locale === 'ar' ? 'لا توجد روابط أو ملاحظات بعد.' : 'No links or notes yet.' }}
+        </p>
+
+        <form v-if="!auth.isGuest.value" class="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-800" @submit.prevent="addLink">
+          <UiInput v-model="linkForm.title" :label="locale === 'ar' ? 'العنوان' : 'Title'" required />
+          <UiInput v-model="linkForm.url" :label="locale === 'ar' ? 'الرابط (https://…)' : 'URL (https://…)'" type="url" dir="ltr" />
+          <UiTextarea v-model="linkForm.note" :label="locale === 'ar' ? 'ملاحظة' : 'Note'" :rows="2" />
+          <p v-if="linkError" role="alert" class="text-xs text-rose-600">{{ linkError }}</p>
+          <UiButton type="submit" :loading="submitting">{{ locale === 'ar' ? 'إضافة' : 'Add' }}</UiButton>
+        </form>
+      </div>
+    </UiModal>
+
     <UiModal
       v-model="showCreateModal"
       :title="t('projects.create_project')"
