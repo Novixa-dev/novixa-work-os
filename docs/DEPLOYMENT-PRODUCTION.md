@@ -41,8 +41,29 @@
 
 أسرار التطبيق (`APP_KEY`، `DB_PASSWORD`) تُولَّد على الخادم في `/opt/novixa-work-os/.env` (chmod 600) ولا تدخل Git.
 
-## الحساب الأول
-يُنشأ مالك واحد تلقائياً (بدون بيانات تجريبية) وتُحفظ كلمة مروره في `/opt/novixa-work-os/.owner-credentials`. **اقرأها مرة واحدة ثم احذفها**، وغيّر كلمة المرور من الإعدادات.
+## بيانات الدخول وإدارة حسابات الفريق
+
+- **رابط تسجيل الدخول المعتمد:**
+  `https://novixa-work-os.novixa.dev/app/auth/login/` (منفذ HTTPS القياسي 443 عبر شبكة Cloudflare وNginx).
+  > **تنبيه:** لا تضع منفذ `:8080` في الرابط؛ المنفذ 8080 هو منفذ داخلي لحاوية Docker بدون شهادة SSL عامة، واستخدامه يسبب خطأ متصفح `ERR_SSL_PROTOCOL_ERROR`.
+
+- **حسابات الفريق المعتمدة افتراضياً:**
+  - `ak01redwan@novixa.dev` (مالك المنظومة / System Owner) — كلمة المرور: `password123`
+  - `ahmed@novixa.dev` (الرئيس التنفيذي / CEO & Founder) — كلمة المرور: `password123`
+  - `sara@novixa.dev` (مديرة العمليات / Admin) — كلمة المرور: `password123`
+  - `tariq@novixa.dev` (قائد تقني / Manager) — كلمة المرور: `password123`
+  - `omar@novixa.dev` (مهندس برمجيات / Member) — كلمة المرور: `password123`
+  - `fatima@novixa.dev` (مصممة واجهات / Member) — كلمة المرور: `password123`
+
+- **أوامر Artisan لإدارة الحسابات على الخادم:**
+  ```bash
+  # مزامنة وتأكيد وجود جميع حسابات فريق نوڤيكسا وملء مساحة العمل بالبيانات الأساسية إذا كانت فارغة
+  docker compose exec api php artisan workos:ensure-team --seed-if-empty
+
+  # تعيين أو تغيير كلمة مرور أي حساب مباشرة
+  docker compose exec api php artisan workos:user-set ak01redwan@novixa.dev "MyNewPassword#2026" --role=owner
+  docker compose exec api php artisan workos:user-set ahmed@novixa.dev "MyNewPassword#2026" --role=owner
+  ```
 
 ## التشغيل والصيانة
 

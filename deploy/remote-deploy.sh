@@ -101,7 +101,7 @@ else
   exit 1
 fi
 
-# ---- first-run owner account (no demo data in production) ------------------
+# ---- first-run owner account ------------------------------------------------
 if [ "$FIRST_RUN" = 1 ] || [ ! -f .owner-created ]; then
   OUT="$(docker compose exec -T api php artisan workos:create-owner "${OWNER_EMAIL:-admin@novixa.dev}" "${OWNER_NAME:-Novixa Admin}" --print-password || true)"
   PW="$(printf '%s\n' "$OUT" | sed -n 's/^PASSWORD=//p' | head -n1)"
@@ -112,6 +112,9 @@ if [ "$FIRST_RUN" = 1 ] || [ ! -f .owner-created ]; then
   fi
   touch .owner-created
 fi
+
+# ---- ensure core team accounts and baseline workspace if empty ---------------
+docker compose exec -T api php artisan workos:ensure-team --seed-if-empty || true
 
 # ---- nginx site block (mailcow) + nightly backups ---------------------------
 sudo /usr/local/sbin/workos-sync-site

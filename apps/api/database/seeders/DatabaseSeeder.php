@@ -41,183 +41,209 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 2. Team Users
-        $owner = User::create([
-            'name' => 'أحمد الحضرمي (Ahmed Al-Hadrami)',
-            'email' => 'ahmed@novixa.dev',
-            'password' => Hash::make('password123'),
-            'role' => 'owner',
-            'job_title' => 'Founder & CEO / المؤسس والمدير التنفيذي',
-            'locale' => 'ar',
-            'timezone' => 'Asia/Riyadh',
-            'theme' => 'dark',
-            'is_active' => true,
-        ]);
+        $owner = User::updateOrCreate(
+            ['email' => 'ahmed@novixa.dev'],
+            [
+                'name' => 'أحمد الحضرمي (Ahmed Al-Hadrami)',
+                'password' => Hash::make('password123'),
+                'role' => 'owner',
+                'job_title' => 'Founder & CEO / المؤسس والمدير التنفيذي',
+                'locale' => 'ar',
+                'timezone' => 'Asia/Riyadh',
+                'theme' => 'dark',
+                'is_active' => true,
+            ]
+        );
 
-        User::create([
-            'name' => 'رضوان (Radwan - System Owner)',
-            'email' => 'ak01redwan@novixa.dev',
-            'password' => Hash::make('password123'),
-            'role' => 'owner',
-            'job_title' => 'System Owner & Principal Architect / مالك المنظومة',
-            'locale' => 'ar',
-            'timezone' => 'Asia/Riyadh',
-            'theme' => 'dark',
-            'is_active' => true,
-        ]);
+        User::updateOrCreate(
+            ['email' => 'ak01redwan@novixa.dev'],
+            [
+                'name' => 'رضوان (Radwan - System Owner)',
+                'password' => Hash::make('password123'),
+                'role' => 'owner',
+                'job_title' => 'System Owner & Principal Architect / مالك المنظومة',
+                'locale' => 'ar',
+                'timezone' => 'Asia/Riyadh',
+                'theme' => 'dark',
+                'is_active' => true,
+            ]
+        );
 
-        $admin = User::create([
-            'name' => 'سارة سالم (Sara Salem)',
-            'email' => 'sara@novixa.dev',
-            'password' => Hash::make('password123'),
-            'role' => 'admin',
-            'job_title' => 'Operations Lead / مديرة العمليات',
-            'locale' => 'ar',
-            'timezone' => 'Asia/Riyadh',
-            'theme' => 'dark',
-            'is_active' => true,
-        ]);
+        $admin = User::updateOrCreate(
+            ['email' => 'sara@novixa.dev'],
+            [
+                'name' => 'سارة سالم (Sara Salem)',
+                'password' => Hash::make('password123'),
+                'role' => 'admin',
+                'job_title' => 'Operations Lead / مديرة العمليات',
+                'locale' => 'ar',
+                'timezone' => 'Asia/Riyadh',
+                'theme' => 'dark',
+                'is_active' => true,
+            ]
+        );
 
-        $lead = User::create([
-            'name' => 'طارق باوزير (Tariq Ba-Wazir)',
-            'email' => 'tariq@novixa.dev',
-            'password' => Hash::make('password123'),
-            'role' => 'manager',
-            'job_title' => 'Technical Lead / قائد تقني ومشاريع',
-            'locale' => 'ar',
-            'timezone' => 'Asia/Riyadh',
-            'theme' => 'dark',
-            'is_active' => true,
-        ]);
+        $lead = User::updateOrCreate(
+            ['email' => 'tariq@novixa.dev'],
+            [
+                'name' => 'طارق باوزير (Tariq Ba-Wazir)',
+                'password' => Hash::make('password123'),
+                'role' => 'manager',
+                'job_title' => 'Technical Lead / قائد تقني ومشاريع',
+                'locale' => 'ar',
+                'timezone' => 'Asia/Riyadh',
+                'theme' => 'dark',
+                'is_active' => true,
+            ]
+        );
 
-        $engineer = User::create([
-            'name' => 'عمر بن محفوظ (Omar Bin-Mahfouz)',
-            'email' => 'omar@novixa.dev',
-            'password' => Hash::make('password123'),
-            'role' => 'member',
-            'job_title' => 'Senior Fullstack Engineer / مهندس برمجيات أول',
-            'locale' => 'ar',
-            'timezone' => 'Asia/Riyadh',
-            'theme' => 'dark',
-            'is_active' => true,
-        ]);
+        $engineer = User::updateOrCreate(
+            ['email' => 'omar@novixa.dev'],
+            [
+                'name' => 'عمر بن محفوظ (Omar Bin-Mahfouz)',
+                'password' => Hash::make('password123'),
+                'role' => 'member',
+                'job_title' => 'Senior Fullstack Engineer / مهندس برمجيات أول',
+                'locale' => 'ar',
+                'timezone' => 'Asia/Riyadh',
+                'theme' => 'dark',
+                'is_active' => true,
+            ]
+        );
 
-        $designer = User::create([
-            'name' => 'فاطمة العطاس (Fatima Al-Attas)',
-            'email' => 'fatima@novixa.dev',
-            'password' => Hash::make('password123'),
-            'role' => 'member',
-            'job_title' => 'UI/UX & Product Designer / مصممة واجهات',
-            'locale' => 'ar',
-            'timezone' => 'Asia/Riyadh',
-            'theme' => 'dark',
-            'is_active' => true,
-        ]);
+        $designer = User::updateOrCreate(
+            ['email' => 'fatima@novixa.dev'],
+            [
+                'name' => 'فاطمة العطاس (Fatima Al-Attas)',
+                'password' => Hash::make('password123'),
+                'role' => 'member',
+                'job_title' => 'UI/UX & Product Designer / مصممة واجهات',
+                'locale' => 'ar',
+                'timezone' => 'Asia/Riyadh',
+                'theme' => 'dark',
+                'is_active' => true,
+            ]
+        );
 
-        $guest = User::create([
-            'name' => 'سعيد الكندي (Saeed Al-Kindi)',
-            'email' => 'saeed@darhadramout.com',
-            'password' => Hash::make('password123'),
-            'role' => 'guest',
-            'job_title' => 'Representative / ممثل دار حضرموت العقارية',
-            'locale' => 'ar',
-            'timezone' => 'Asia/Riyadh',
-            'theme' => 'dark',
-            'is_active' => true,
-        ]);
+        $guest = User::updateOrCreate(
+            ['email' => 'saeed@darhadramout.com'],
+            [
+                'name' => 'سعيد الكندي (Saeed Al-Kindi)',
+                'password' => Hash::make('password123'),
+                'role' => 'guest',
+                'job_title' => 'Representative / ممثل دار حضرموت العقارية',
+                'locale' => 'ar',
+                'timezone' => 'Asia/Riyadh',
+                'theme' => 'dark',
+                'is_active' => true,
+            ]
+        );
 
         // 3. Labels
-        $labelBackend = TaskLabel::create(['name_ar' => 'الواجهة الخلفية (Backend)', 'name_en' => 'Backend', 'color' => '#2563EB']);
-        $labelFrontend = TaskLabel::create(['name_ar' => 'الواجهة الأمامية (Frontend)', 'name_en' => 'Frontend', 'color' => '#14B8A6']);
-        $labelDesign = TaskLabel::create(['name_ar' => 'تصميم وتجربة (UI/UX)', 'name_en' => 'UI/UX', 'color' => '#EC4899']);
-        $labelSecurity = TaskLabel::create(['name_ar' => 'أمان وحماية (Security)', 'name_en' => 'Security', 'color' => '#EF4444']);
-        $labelClient = TaskLabel::create(['name_ar' => 'تسليم عميل (Client Delivery)', 'name_en' => 'Client Delivery', 'color' => '#F59E0B']);
+        $labelBackend = TaskLabel::firstOrCreate(['name_ar' => 'الواجهة الخلفية (Backend)'], ['name_en' => 'Backend', 'color' => '#2563EB']);
+        $labelFrontend = TaskLabel::firstOrCreate(['name_ar' => 'الواجهة الأمامية (Frontend)'], ['name_en' => 'Frontend', 'color' => '#14B8A6']);
+        $labelDesign = TaskLabel::firstOrCreate(['name_ar' => 'تصميم وتجربة (UI/UX)'], ['name_en' => 'UI/UX', 'color' => '#EC4899']);
+        $labelSecurity = TaskLabel::firstOrCreate(['name_ar' => 'أمان وحماية (Security)'], ['name_en' => 'Security', 'color' => '#EF4444']);
+        $labelClient = TaskLabel::firstOrCreate(['name_ar' => 'تسليم عميل (Client Delivery)'], ['name_en' => 'Client Delivery', 'color' => '#F59E0B']);
 
         // 4. Products
-        $prodAqar = Product::create([
-            'name_ar' => 'نوڤيكسا عقار (Novixa Aqar)',
-            'name_en' => 'Novixa Aqar Real Estate OS',
-            'slug' => 'novixa-aqar',
-            'tagline_ar' => 'المنظومة الرقمية المتكاملة لإدارة المكاتب والشركات العقارية',
-            'tagline_en' => 'Integrated Real Estate Operating System',
-            'description_ar' => 'منصة عربية بالكامل لإدارة العقارات، الوحدات، عقود الإيجار، تحصيل المستحقات، وتتبع الصيانة مع دعم العملات المتعددة.',
-            'description_en' => 'Comprehensive Arabic-first real estate ERP managing properties, tenancy contracts, payment installments, and maintenance.',
-            'lifecycle_status' => 'active',
-            'owner_id' => $lead->id,
-            'repository_url' => 'https://github.com/novixa-dev/novixa-aqar-core',
-            'website_url' => 'https://aqar-landing-page.novixa.dev',
-            'demo_url' => 'https://aqar-demo2.novixa.dev',
-            'documentation_url' => 'https://docs.novixa.dev/aqar',
-        ]);
+        $prodAqar = Product::updateOrCreate(
+            ['slug' => 'novixa-aqar'],
+            [
+                'name_ar' => 'نوڤيكسا عقار (Novixa Aqar)',
+                'name_en' => 'Novixa Aqar Real Estate OS',
+                'tagline_ar' => 'المنظومة الرقمية المتكاملة لإدارة المكاتب والشركات العقارية',
+                'tagline_en' => 'Integrated Real Estate Operating System',
+                'description_ar' => 'منصة عربية بالكامل لإدارة العقارات، الوحدات، عقود الإيجار، تحصيل المستحقات، وتتبع الصيانة مع دعم العملات المتعددة.',
+                'description_en' => 'Comprehensive Arabic-first real estate ERP managing properties, tenancy contracts, payment installments, and maintenance.',
+                'lifecycle_status' => 'active',
+                'owner_id' => $lead->id,
+                'repository_url' => 'https://github.com/novixa-dev/novixa-aqar-core',
+                'website_url' => 'https://aqar-landing-page.novixa.dev',
+                'demo_url' => 'https://aqar-demo2.novixa.dev',
+                'documentation_url' => 'https://docs.novixa.dev/aqar',
+            ]
+        );
 
-        $prodMuhajim = Product::create([
-            'name_ar' => 'مُهاجم (Muhajim Growth Engine)',
-            'name_en' => 'Muhajim Outbound Engine',
-            'slug' => 'muhajim',
-            'tagline_ar' => 'محرك النمو والاستخبارات التسويقية للأعمال والوكالات',
-            'tagline_en' => 'Automated Outbound Intelligence Engine',
-            'description_ar' => 'أتمتة أبحاث العملاء المحتملين والتواصل المخصص عبر قنوات متعددة وفق أعلى معايير الحوكمة.',
-            'description_en' => 'Automated lead research, prospect qualification, and smart email/messaging sequences.',
-            'lifecycle_status' => 'active',
-            'owner_id' => $owner->id,
-            'repository_url' => 'https://github.com/novixa-dev/muhajim-engine',
-            'website_url' => 'https://muhajim.novixa.dev',
-            'demo_url' => 'https://demo.muhajim.novixa.dev',
-            'documentation_url' => 'https://docs.novixa.dev/muhajim',
-        ]);
+        $prodMuhajim = Product::updateOrCreate(
+            ['slug' => 'muhajim'],
+            [
+                'name_ar' => 'مُهاجم (Muhajim Growth Engine)',
+                'name_en' => 'Muhajim Outbound Engine',
+                'tagline_ar' => 'محرك النمو والاستخبارات التسويقية للأعمال والوكالات',
+                'tagline_en' => 'Automated Outbound Intelligence Engine',
+                'description_ar' => 'أتمتة أبحاث العملاء المحتملين والتواصل المخصص عبر قنوات متعددة وفق أعلى معايير الحوكمة.',
+                'description_en' => 'Automated lead research, prospect qualification, and smart email/messaging sequences.',
+                'lifecycle_status' => 'active',
+                'owner_id' => $owner->id,
+                'repository_url' => 'https://github.com/novixa-dev/muhajim-engine',
+                'website_url' => 'https://muhajim.novixa.dev',
+                'demo_url' => 'https://demo.muhajim.novixa.dev',
+                'documentation_url' => 'https://docs.novixa.dev/muhajim',
+            ]
+        );
 
-        $prodServe = Product::create([
-            'name_ar' => 'نوڤيكسا سيرف (Novixa Serve POS)',
-            'name_en' => 'Novixa Serve Restaurant POS',
-            'slug' => 'novixa-serve',
-            'tagline_ar' => 'نظام نقاط البيع وإدارة الطلبات السريعة للمطاعم والمقاهي',
-            'tagline_en' => 'Touch-first POS & Kitchen Display for F&B',
-            'description_ar' => 'يعمل بدون اتصال بالإنترنت، ويدعم شاشات المطبخ، والطباعة الحرارية المباشرة باللغة العربية.',
-            'description_en' => 'Offline-first POS with multi-printer thermal routing and kitchen display system.',
-            'lifecycle_status' => 'beta',
-            'owner_id' => $engineer->id,
-            'repository_url' => 'https://github.com/novixa-dev/novixa-serve',
-            'demo_url' => 'https://serve-demo.novixa.dev',
-        ]);
+        $prodServe = Product::updateOrCreate(
+            ['slug' => 'novixa-serve'],
+            [
+                'name_ar' => 'نوڤيكسا سيرف (Novixa Serve POS)',
+                'name_en' => 'Novixa Serve Restaurant POS',
+                'tagline_ar' => 'نظام نقاط البيع وإدارة الطلبات السريعة للمطاعم والمقاهي',
+                'tagline_en' => 'Touch-first POS & Kitchen Display for F&B',
+                'description_ar' => 'يعمل بدون اتصال بالإنترنت، ويدعم شاشات المطبخ، والطباعة الحرارية المباشرة باللغة العربية.',
+                'description_en' => 'Offline-first POS with multi-printer thermal routing and kitchen display system.',
+                'lifecycle_status' => 'beta',
+                'owner_id' => $engineer->id,
+                'repository_url' => 'https://github.com/novixa-dev/novixa-serve',
+                'demo_url' => 'https://serve-demo.novixa.dev',
+            ]
+        );
 
         // 5. Clients & Contacts
-        $clientDar = Client::create([
-            'name_ar' => 'دار حضرموت العقارية',
-            'name_en' => 'Dar Hadramout Real Estate',
-            'type' => 'company',
-            'industry' => 'Real Estate',
-            'status' => 'active_client',
-            'website' => 'https://darhadramout.com',
-            'phone' => '+967 770 123 456',
-            'email' => 'management@darhadramout.com',
-            'city' => 'المكلا (Mukalla)',
-            'country' => 'Yemen',
-            'account_manager_id' => $admin->id,
-            'notes' => 'أول عميل رائد لمنظومة نوڤيكسا عقار (باقة المؤسسات الاحترافية $2,500).',
-        ]);
+        $clientDar = Client::firstOrCreate(
+            ['name_ar' => 'دار حضرموت العقارية'],
+            [
+                'name_en' => 'Dar Hadramout Real Estate',
+                'type' => 'company',
+                'industry' => 'Real Estate',
+                'status' => 'active_client',
+                'website' => 'https://darhadramout.com',
+                'phone' => '+967 770 123 456',
+                'email' => 'management@darhadramout.com',
+                'city' => 'المكلا (Mukalla)',
+                'country' => 'Yemen',
+                'account_manager_id' => $admin->id,
+                'notes' => 'أول عميل رائد لمنظومة نوڤيكسا عقار (باقة المؤسسات الاحترافية $2,500).',
+            ]
+        );
 
-        $contactSaeed = Contact::create([
-            'client_id' => $clientDar->id,
-            'name' => 'المهندس سعيد الكندي',
-            'job_title' => 'المدير العام والمالك',
-            'email' => 'saeed@darhadramout.com',
-            'phone' => '+967 771 987 654',
-            'is_primary' => true,
-            'notes' => 'المسؤول الرئيسي عن اعتماد المتطلبات الفنية والتدريب.',
-        ]);
+        $contactSaeed = Contact::firstOrCreate(
+            ['email' => 'saeed@darhadramout.com'],
+            [
+                'client_id' => $clientDar->id,
+                'name' => 'المهندس سعيد الكندي',
+                'job_title' => 'المدير العام والمالك',
+                'phone' => '+967 771 987 654',
+                'is_primary' => true,
+                'notes' => 'المسؤول الرئيسي عن اعتماد المتطلبات الفنية والتدريب.',
+            ]
+        );
 
-        $clientRayyan = Client::create([
-            'name_ar' => 'شركة الريان للخدمات اللوجستية',
-            'name_en' => 'Al-Rayyan Logistics & Transport',
-            'type' => 'company',
-            'industry' => 'Logistics & Cargo',
-            'status' => 'prospect',
-            'phone' => '+967 772 345 678',
-            'email' => 'info@alrayyan-cargo.com',
-            'city' => 'سيئون (Seiyun)',
-            'country' => 'Yemen',
-            'account_manager_id' => $owner->id,
-            'notes' => 'مهتمون بنظام تتبع الشحنات والأسطول الداخلي.',
-        ]);
+        $clientRayyan = Client::firstOrCreate(
+            ['name_ar' => 'شركة الريان للخدمات اللوجستية'],
+            [
+                'name_en' => 'Al-Rayyan Logistics & Transport',
+                'type' => 'company',
+                'industry' => 'Logistics & Cargo',
+                'status' => 'prospect',
+                'phone' => '+967 772 345 678',
+                'email' => 'info@alrayyan-cargo.com',
+                'city' => 'سيئون (Seiyun)',
+                'country' => 'Yemen',
+                'account_manager_id' => $owner->id,
+                'notes' => 'مهتمون بنظام تتبع الشحنات والأسطول الداخلي.',
+            ]
+        );
 
         // 6. Opportunities
         $oppDar = Opportunity::create([
@@ -269,49 +295,53 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 7. Projects
-        $projAqarCore = Project::create([
-            'code' => 'AQR-CORE',
-            'name_ar' => 'تطوير الإصدار الثاني من نوڤيكسا عقار (V2)',
-            'name_en' => 'Novixa Aqar V2 Core Platform',
-            'description_ar' => 'ترقية المعمارية الأساسية لنوڤيكسا عقار لتشمل تسريع تحميل العقارات وعقود الإيجار المتقدمة وتصدير التقارير بصيغة PDF.',
-            'description_en' => 'Core architectural upgrade for Novixa Aqar real estate system.',
-            'type' => 'internal_product',
-            'status' => 'active',
-            'priority' => 'high',
-            'lead_id' => $lead->id,
-            'product_id' => $prodAqar->id,
-            'start_date' => now()->subDays(20),
-            'due_date' => now()->addDays(40),
-            'progress_percentage' => 45,
-        ]);
+        $projAqarCore = Project::firstOrCreate(
+            ['code' => 'AQR-CORE'],
+            [
+                'name_ar' => 'تطوير الإصدار الثاني من نوڤيكسا عقار (V2)',
+                'name_en' => 'Novixa Aqar V2 Core Platform',
+                'description_ar' => 'ترقية المعمارية الأساسية لنوڤيكسا عقار لتشمل تسريع تحميل العقارات وعقود الإيجار المتقدمة وتصدير التقارير بصيغة PDF.',
+                'description_en' => 'Core architectural upgrade for Novixa Aqar real estate system.',
+                'type' => 'internal_product',
+                'status' => 'active',
+                'priority' => 'high',
+                'lead_id' => $lead->id,
+                'product_id' => $prodAqar->id,
+                'start_date' => now()->subDays(20),
+                'due_date' => now()->addDays(40),
+                'progress_percentage' => 45,
+            ]
+        );
 
-        $projDarDelivery = Project::create([
-            'code' => 'DAR-DLV',
-            'name_ar' => 'مشروع تخصيص ونشر دار حضرموت العقارية',
-            'name_en' => 'Dar Hadramout Implementation & Delivery',
-            'description_ar' => 'تهيئة السيرفر السحابي، وربط النطاق darhadramout.com، وتطبيق الهوية البصرية، واستيراد 120 عقار ووحدة أولية.',
-            'description_en' => 'Custom branding, VPS deployment, and initial data migration for Dar Hadramout Real Estate.',
-            'type' => 'client_delivery',
-            'status' => 'active',
-            'priority' => 'urgent',
-            'lead_id' => $lead->id,
-            'product_id' => $prodAqar->id,
-            'client_id' => $clientDar->id,
-            'start_date' => now()->subDays(7),
-            'due_date' => now()->addDays(14),
-            'progress_percentage' => 60,
-        ]);
+        $projDarDelivery = Project::firstOrCreate(
+            ['code' => 'DAR-DLV'],
+            [
+                'name_ar' => 'مشروع تخصيص ونشر دار حضرموت العقارية',
+                'name_en' => 'Dar Hadramout Implementation & Delivery',
+                'description_ar' => 'تهيئة السيرفر السحابي، وربط النطاق darhadramout.com، وتطبيق الهوية البصرية، واستيراد 120 عقار ووحدة أولية.',
+                'description_en' => 'Custom branding, VPS deployment, and initial data migration for Dar Hadramout Real Estate.',
+                'type' => 'client_delivery',
+                'status' => 'active',
+                'priority' => 'urgent',
+                'lead_id' => $lead->id,
+                'product_id' => $prodAqar->id,
+                'client_id' => $clientDar->id,
+                'start_date' => now()->subDays(7),
+                'due_date' => now()->addDays(14),
+                'progress_percentage' => 60,
+            ]
+        );
 
         $oppDar->update(['won_delivery_project_id' => $projDarDelivery->id]);
 
         // Project Memberships
-        $projAqarCore->members()->attach([
+        $projAqarCore->members()->syncWithoutDetaching([
             $lead->id => ['role' => 'lead', 'joined_at' => now()],
             $engineer->id => ['role' => 'contributor', 'joined_at' => now()],
             $designer->id => ['role' => 'contributor', 'joined_at' => now()],
         ]);
 
-        $projDarDelivery->members()->attach([
+        $projDarDelivery->members()->syncWithoutDetaching([
             $lead->id => ['role' => 'lead', 'joined_at' => now()],
             $admin->id => ['role' => 'contributor', 'joined_at' => now()],
             $engineer->id => ['role' => 'contributor', 'joined_at' => now()],
