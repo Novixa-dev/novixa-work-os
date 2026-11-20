@@ -1324,7 +1324,7 @@ onMounted(fetchProjectData)
         <UiTextarea
           v-model="taskForm.description_ar"
           :label="t('tasks.description')"
-          rows="3"
+          :rows="3"
           :placeholder="locale === 'ar' ? 'تفاصيل المهمة، المتطلبات، ومعايير القبول...' : 'Task requirements, details...'"
         />
 
@@ -1421,7 +1421,7 @@ onMounted(fetchProjectData)
         <UiTextarea
           v-model="noteForm.content"
           :label="locale === 'ar' ? 'المحتوى أو التفاصيل' : 'Details / Notes'"
-          rows="3"
+          :rows="3"
           placeholder="خطوات، ملاحظات، أو تعليمات استخدام..."
         />
 
@@ -1475,7 +1475,7 @@ onMounted(fetchProjectData)
         <UiTextarea
           v-model="reportForm.content"
           :label="locale === 'ar' ? 'تفاصيل التقرير أو المقترح' : 'Report Details'"
-          rows="5"
+          :rows="5"
           required
           placeholder="اكتب خلاصة التقدم، الملاحظات، أو المقترح الهندسي بالتفصيل..."
         />
@@ -1532,7 +1532,7 @@ onMounted(fetchProjectData)
         <UiTextarea
           v-model="linkForm.note"
           :label="locale === 'ar' ? 'ملاحظة أو وصف مختصر' : 'Description / Note'"
-          rows="2"
+          :rows="2"
         />
 
         <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
