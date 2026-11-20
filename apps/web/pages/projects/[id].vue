@@ -130,9 +130,9 @@ async function fetchProjectData() {
       api.get('/tasks', { params: { project_id: projectId, per_page: 100 } }),
       api.get('/users')
     ])
-    project.value = pRes.data?.project || null
-    tasks.value = Array.isArray(tRes.data?.data) ? tRes.data.data : (Array.isArray(tRes.data) ? tRes.data : [])
-    usersList.value = uRes.data?.data || []
+    project.value = pRes.project || pRes.data?.project || pRes.data || null
+    tasks.value = tRes.data?.data || (Array.isArray(tRes.data) ? tRes.data : (Array.isArray(tRes) ? tRes : []))
+    usersList.value = uRes.data?.data || (Array.isArray(uRes.data) ? uRes.data : (Array.isArray(uRes) ? uRes : []))
   } catch (err) {
     console.error('Failed to load project hub', err)
   } finally {
@@ -149,7 +149,7 @@ async function handleClaimTask(task: any) {
       if (idx !== -1) tasks.value[idx] = res.data.task
       // refresh project to update progress
       const pRes = await api.get(`/projects/${projectId}`)
-      project.value = pRes.data?.project || project.value
+      project.value = pRes.project || pRes.data?.project || project.value
     }
   } catch (err: any) {
     alert(err.response?.data?.message || 'Failed to claim task')
@@ -163,7 +163,7 @@ async function handleReleaseTask(task: any) {
       const idx = tasks.value.findIndex(t => t.id === task.id)
       if (idx !== -1) tasks.value[idx] = res.data.task
       const pRes = await api.get(`/projects/${projectId}`)
-      project.value = pRes.data?.project || project.value
+      project.value = pRes.project || pRes.data?.project || project.value
     }
   } catch (err: any) {
     alert(err.response?.data?.message || 'Failed to release task')
@@ -209,7 +209,7 @@ async function handleCreateNote() {
     await api.post(`/projects/${projectId}/notes`, noteForm.value)
     showCreateNoteModal.value = false
     const pRes = await api.get(`/projects/${projectId}`)
-    project.value = pRes.data?.project || project.value
+    project.value = pRes.project || pRes.data?.project || project.value
   } catch (err: any) {
     modalError.value = err.response?.data?.message || 'Failed to save card'
   } finally {
@@ -250,7 +250,7 @@ async function handleCreateReport() {
     await api.post(`/projects/${projectId}/reports`, reportForm.value)
     showCreateReportModal.value = false
     const pRes = await api.get(`/projects/${projectId}`)
-    project.value = pRes.data?.project || project.value
+    project.value = pRes.project || pRes.data?.project || project.value
   } catch (err: any) {
     modalError.value = err.response?.data?.message || 'Failed to save report'
   } finally {
@@ -291,7 +291,7 @@ async function handleCreateLink() {
     await api.post(`/projects/${projectId}/links`, linkForm.value)
     showCreateLinkModal.value = false
     const pRes = await api.get(`/projects/${projectId}`)
-    project.value = pRes.data?.project || project.value
+    project.value = pRes.project || pRes.data?.project || project.value
   } catch (err: any) {
     modalError.value = err.response?.data?.message || 'Failed to save link'
   } finally {
@@ -319,7 +319,7 @@ async function handleCreateMilestone() {
     await api.post(`/projects/${projectId}/milestones`, milestoneForm.value)
     showCreateMilestoneModal.value = false
     const pRes = await api.get(`/projects/${projectId}`)
-    project.value = pRes.data?.project || project.value
+    project.value = pRes.project || pRes.data?.project || project.value
   } catch (err) {
     console.error('Failed to add milestone', err)
   } finally {
@@ -520,8 +520,9 @@ onMounted(fetchProjectData)
       </div>
     </UiCard>
 
-    <!-- Workstation Tabs -->
-    <div class="flex items-center border-b border-slate-200 dark:border-slate-800 gap-2 sm:gap-6 text-xs sm:text-sm font-semibold overflow-x-auto pb-1">
+    <template v-if="project">
+      <!-- Workstation Tabs -->
+      <div class="flex items-center border-b border-slate-200 dark:border-slate-800 gap-2 sm:gap-6 text-xs sm:text-sm font-semibold overflow-x-auto pb-1">
       <!-- Tab 1: Tasks & Deliverables -->
       <button
         type="button"
@@ -878,7 +879,7 @@ onMounted(fetchProjectData)
       </div>
 
       <!-- Empty state -->
-      <div v-if="!project.notes || project.notes.length === 0" class="py-16 text-center bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 p-8">
+      <div v-if="!project?.notes || project.notes.length === 0" class="py-16 text-center bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 p-8">
         <Key class="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
         <h4 class="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">
           {{ locale === 'ar' ? 'لا توجد بطاقات معلومات مسجلة لهذا المشروع' : 'No info cards or credentials recorded' }}
@@ -895,7 +896,7 @@ onMounted(fetchProjectData)
       <!-- Cards Grid -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <UiCard
-          v-for="note in project.notes"
+          v-for="note in (project?.notes || [])"
           :key="note.id"
           class="p-4 flex flex-col justify-between border-t-4 transition-shadow hover:shadow-md"
           :class="note.color === 'emerald' ? 'border-t-emerald-500' : note.color === 'blue' ? 'border-t-blue-500' : note.color === 'purple' ? 'border-t-purple-500' : 'border-t-slate-400'"
@@ -1039,7 +1040,7 @@ onMounted(fetchProjectData)
       </div>
 
       <!-- Empty state -->
-      <div v-if="!project.reports || project.reports.length === 0" class="py-16 text-center bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 p-8">
+      <div v-if="!project?.reports || project.reports.length === 0" class="py-16 text-center bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 p-8">
         <FileCheck class="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
         <h4 class="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">
           {{ locale === 'ar' ? 'لا توجد تقارير أو مقترحات مسجلة حالياً' : 'No reports or suggestions logged yet' }}
@@ -1056,7 +1057,7 @@ onMounted(fetchProjectData)
       <!-- Reports List -->
       <div v-else class="space-y-3">
         <UiCard
-          v-for="rep in project.reports"
+          v-for="rep in (project?.reports || [])"
           :key="rep.id"
           class="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md transition-shadow"
         >
@@ -1143,7 +1144,7 @@ onMounted(fetchProjectData)
       </div>
 
       <!-- Empty state -->
-      <div v-if="!project.links || project.links.length === 0" class="py-16 text-center bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 p-8">
+      <div v-if="!project?.links || project.links.length === 0" class="py-16 text-center bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 p-8">
         <LinkIcon class="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
         <h4 class="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">
           {{ locale === 'ar' ? 'لا توجد مراجع أو روابط مسجلة' : 'No reference links logged' }}
@@ -1160,7 +1161,7 @@ onMounted(fetchProjectData)
       <!-- Links Grid -->
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <UiCard
-          v-for="link in project.links"
+          v-for="link in (project?.links || [])"
           :key="link.id"
           class="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col justify-between hover:shadow-md transition-shadow"
         >
@@ -1231,7 +1232,7 @@ onMounted(fetchProjectData)
 
       <div class="space-y-2">
         <div
-          v-for="m in project.milestones"
+          v-for="m in (project?.milestones || [])"
           :key="m.id"
           class="flex items-center justify-between p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs"
         >
@@ -1259,6 +1260,7 @@ onMounted(fetchProjectData)
         </div>
       </div>
     </div>
+    </template>
 
     <!-- MODAL 1: CREATE TASK -->
     <UiModal
