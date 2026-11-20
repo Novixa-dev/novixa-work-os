@@ -124,6 +124,18 @@ class Project extends Model
         return $this->hasMany(ProjectLink::class)->latest();
     }
 
+    /** @return HasMany<ProjectNote, $this> */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(ProjectNote::class)->orderByDesc('is_pinned')->latest();
+    }
+
+    /** @return HasMany<ProjectReport, $this> */
+    public function reports(): HasMany
+    {
+        return $this->hasMany(ProjectReport::class)->latest();
+    }
+
     public function milestones(): HasMany
     {
         return $this->hasMany(ProjectMilestone::class);

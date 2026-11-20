@@ -20,6 +20,16 @@ This document maintains a living, timestamped record of implementation progress,
 
 ## Chronological Progress Entries
 
+### 2026-11-20: Project Workspace Hub, Task Claiming & Credentials Vault
+- **Project Details Workspace (`/projects/[id]`):** Created a mobile-first project hub with 5 interactive workstations:
+  1. **Tasks & ToDos:** Project-filtered list and Kanban views with atomic task claiming, taken-by indicators, and subtask tracking.
+  2. **Info Cards & Access Vault:** Secure credentials management with password hide/reveal toggle, clipboard copy, environment tags, and pinned cards.
+  3. **Reports & Suggestions:** Team progress updates, architectural suggestions, and risk logs with review/approval status workflows.
+  4. **References & External Links:** Categorized resources (Figma, GitHub, Docs, Dashboards).
+  5. **Milestones & Roadmap:** Milestone delivery checklist and progress indicators.
+- **Backend API & Testing:** Added migrations for `project_notes` and `project_reports`, updated `project_links`, implemented `ProjectNoteController` and `ProjectReportController`, and authored `ProjectHubTest` (3 new tests, 33 total API tests passing with 143 assertions).
+- **Accounts Inventory & Synchronization:** Verified and documented all seeded accounts, added `ak01redwan@novixa.dev` owner alias, and synchronized with GitHub repository.
+
 ### 2026-11-11: UX & quality review pass
 - Real-browser review against seeded data found list pages rendering empty, undefined `primary` palette, auth-guard race and demo credentials on the production login page — all fixed and covered by `e2e/journeys.mjs` (CI job `e2e`, gates deploys).
 - New UX: toasts, confirm dialogs, accessible modals, onboarding checklist, load-more pagination, page titles, localized errors.

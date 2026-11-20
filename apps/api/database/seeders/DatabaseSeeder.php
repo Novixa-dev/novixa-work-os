@@ -11,7 +11,10 @@ use App\Models\Notification;
 use App\Models\Opportunity;
 use App\Models\Product;
 use App\Models\Project;
+use App\Models\ProjectLink;
 use App\Models\ProjectMilestone;
+use App\Models\ProjectNote;
+use App\Models\ProjectReport;
 use App\Models\Task;
 use App\Models\TaskComment;
 use App\Models\TaskLabel;
@@ -44,6 +47,18 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password123'),
             'role' => 'owner',
             'job_title' => 'Founder & CEO / المؤسس والمدير التنفيذي',
+            'locale' => 'ar',
+            'timezone' => 'Asia/Riyadh',
+            'theme' => 'dark',
+            'is_active' => true,
+        ]);
+
+        User::create([
+            'name' => 'رضوان (Radwan - System Owner)',
+            'email' => 'ak01redwan@novixa.dev',
+            'password' => Hash::make('password123'),
+            'role' => 'owner',
+            'job_title' => 'System Owner & Principal Architect / مالك المنظومة',
             'locale' => 'ar',
             'timezone' => 'Asia/Riyadh',
             'theme' => 'dark',
@@ -327,6 +342,80 @@ class DatabaseSeeder extends Seeder
             'title_en' => 'Phase 3: Team Training & Final Handover',
             'due_date' => now()->addDays(14),
             'status' => 'pending',
+        ]);
+
+        // Seed Project Notes & Info Cards (Credentials, Plans, Dashboard Links)
+        ProjectNote::create([
+            'project_id' => $projDarDelivery->id,
+            'user_id' => $lead->id,
+            'title' => 'بيانات الدخول للوحة التحكم السحابية (Staging Server)',
+            'type' => 'credential',
+            'url' => 'https://staging.darhadramout.com/admin',
+            'username' => 'sysadmin@darhadramout.com',
+            'password' => 'DarHadramout#2026@Pass',
+            'environment' => 'staging',
+            'color' => 'emerald',
+            'is_pinned' => true,
+            'content' => 'لوحة الإدارة المؤقتة المخصصة لفحص واختبار العقارات من قبل المهندسين والعميل.',
+        ]);
+
+        ProjectNote::create([
+            'project_id' => $projDarDelivery->id,
+            'user_id' => $engineer->id,
+            'title' => 'خطة استيراد بيانات 120 عقار ووحدة سكنية',
+            'type' => 'plan',
+            'color' => 'blue',
+            'is_pinned' => true,
+            'content' => "1. مراجعة ملف Excel الوارد من العميل وتوحيد أسماء الأحياء (فوة، الديس، الشرج، جول مسحة).\n2. تدقيق نسب العمولات وأرقام صكوك الملكية.\n3. تشغيل سكريبت الاستيراد وفحص الصور المرفقة.",
+        ]);
+
+        ProjectNote::create([
+            'project_id' => $projDarDelivery->id,
+            'user_id' => $lead->id,
+            'title' => 'لوحة مراقبة أداء الخادم السحابي (Grafana Monitoring)',
+            'type' => 'dashboard',
+            'url' => 'https://monitoring.novixa.dev/d/dar-hadramout',
+            'color' => 'purple',
+            'is_pinned' => false,
+            'content' => 'لوحة مراقبة حية لاستهلاك المعالج والذاكرة وزمن استجابة خادم Nginx وقاعدة بيانات PostgreSQL.',
+        ]);
+
+        // Seed Project Reports & Suggestions
+        ProjectReport::create([
+            'project_id' => $projDarDelivery->id,
+            'user_id' => $engineer->id,
+            'title' => 'تقرير إنجاز المرحلة الأولى — الخادم السحابي والأمان',
+            'type' => 'progress_report',
+            'status' => 'approved',
+            'content' => 'تم بحمد الله إعداد سيرفر Ubuntu 24.04 وتثبيت بيئة Docker المعزولة وتوليد شهادات SSL. أظهرت الفحوصات أن معدل الاستجابة لا يتعدى 75ms مع حماية المنافذ بالكامل.',
+        ]);
+
+        ProjectReport::create([
+            'project_id' => $projDarDelivery->id,
+            'user_id' => $designer->id,
+            'title' => 'مقترح: تفعيل الإشعارات اللحظية عبر WhatsApp Business API',
+            'type' => 'suggestion',
+            'status' => 'open',
+            'content' => 'نقترح ربط منصة العقارات ببوابة واتساب لإرسال تنبيهات تلقائية للعملاء عند إضافة عقار مطابق لاهتمامهم، مما يزيد سرعة إغلاق الصفقات.',
+        ]);
+
+        // Seed Project Links & References
+        ProjectLink::create([
+            'project_id' => $projDarDelivery->id,
+            'user_id' => $designer->id,
+            'title' => 'مخططات وتصاميم الهوية على Figma',
+            'category' => 'figma',
+            'url' => 'https://www.figma.com/design/novixa/dar-hadramout',
+            'note' => 'التصاميم المعتمدة للواجهة الأمامية وتجربة الهواتف الذكية',
+        ]);
+
+        ProjectLink::create([
+            'project_id' => $projDarDelivery->id,
+            'user_id' => $engineer->id,
+            'title' => 'مستودع الكود البرمجي الخاص بالمشروع',
+            'category' => 'repo',
+            'url' => 'https://github.com/Novixa-dev/dar-hadramout-delivery',
+            'note' => 'مستودع النشر السحابي مع GitHub Actions للـ CI/CD',
         ]);
 
         // 8. Tasks & Subtasks

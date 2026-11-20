@@ -10,6 +10,8 @@ use App\Modules\Notify\Controllers\NotificationController;
 use App\Modules\Products\Controllers\ProductController;
 use App\Modules\Projects\Controllers\ProjectController;
 use App\Modules\Projects\Controllers\ProjectLinkController;
+use App\Modules\Projects\Controllers\ProjectNoteController;
+use App\Modules\Projects\Controllers\ProjectReportController;
 use App\Modules\Shared\Controllers\DashboardController;
 use App\Modules\Shared\Controllers\SearchController;
 use App\Modules\Shared\Controllers\SettingsController;
@@ -43,6 +45,12 @@ Route::prefix('v1')->group(function () {
         Route::post('projects/{project}/milestones', [ProjectController::class, 'addMilestone']);
         Route::post('projects/{project}/links', [ProjectLinkController::class, 'store']);
         Route::delete('projects/{project}/links/{link}', [ProjectLinkController::class, 'destroy']);
+        Route::post('projects/{project}/notes', [ProjectNoteController::class, 'store']);
+        Route::patch('projects/{project}/notes/{note}/pin', [ProjectNoteController::class, 'togglePin']);
+        Route::delete('projects/{project}/notes/{note}', [ProjectNoteController::class, 'destroy']);
+        Route::post('projects/{project}/reports', [ProjectReportController::class, 'store']);
+        Route::patch('projects/{project}/reports/{report}/status', [ProjectReportController::class, 'updateStatus']);
+        Route::delete('projects/{project}/reports/{report}', [ProjectReportController::class, 'destroy']);
 
         // Tasks & Personal Work
         Route::get('tasks/my-work', [TaskController::class, 'myWork']);

@@ -2,6 +2,16 @@
 
 يتبع [Keep a Changelog](https://keepachangelog.com/) و[Semantic Versioning](https://semver.org/).
 
+## [1.5.0] — 2026-11-20
+
+### Added
+- **Dedicated Project Workspace & Details Page (`/projects/[id]`)**: Comprehensive mobile-first project hub featuring 5 tabs (Tasks & ToDos, Info Cards & Access Vault, Reports & Suggestions, References & External Links, Milestones).
+- **Project-Specific Tasks & Live Claiming**: Direct project-scoped task list and Kanban boards with visual "Taken by..." chips, atomic claiming (`/tasks/{id}/claim`) and releasing (`/tasks/{id}/release`).
+- **Project Info Cards & Credentials Vault (`/projects/{id}/notes`)**: Secure card vault supporting server and dashboard credentials with password reveal toggle, 1-click clipboard copy, environment tags (`production`, `staging`, `dev`), sprint plans, and pinned cards.
+- **Project Reports & Suggestions (`/projects/{id}/reports`)**: Structured submission of sprint progress reports, engineering suggestions, and blocker logs with review and approval workflows for tech leads.
+- **Project References & External Resources (`/projects/{id}/links`)**: Categorized external resources including Figma design files, GitHub repos, external dashboards, and client documentation.
+- **3 New Feature Tests (33 total, 143 assertions)** in `ProjectHubTest.php`.
+
 ## [1.4.0] — 2026-11-11
 
 ### Added

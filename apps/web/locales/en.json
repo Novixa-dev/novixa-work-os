@@ -92,7 +92,20 @@
     "milestones": "Milestones",
     "add_milestone": "Add Milestone",
     "due_date": "Target Delivery Date",
-    "empty_projects": "No projects recorded currently."
+    "empty_projects": "No projects recorded currently.",
+    "hub": "Project Workspace & Details",
+    "tab_tasks": "Tasks & ToDos",
+    "tab_notes": "Info Cards & Access Vault",
+    "tab_reports": "Reports & Suggestions",
+    "tab_links": "References & Links",
+    "tab_milestones": "Milestones & Timeline",
+    "claim_task": "Claim Task",
+    "release_task": "Release Task",
+    "taken_by": "Taken by",
+    "unassigned": "Available to claim",
+    "add_card": "Add Info Card / Access",
+    "add_report": "Add Report / Suggestion",
+    "add_link": "Add Reference / Link"
   },
   "products": {
     "title": "Novixa Product Catalog",

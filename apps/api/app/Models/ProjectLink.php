@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ProjectLink extends Model
 {
-    protected $fillable = ['project_id', 'user_id', 'title', 'url', 'note'];
+    protected $fillable = ['project_id', 'user_id', 'title', 'category', 'url', 'note'];
 
     /** @return BelongsTo<Project, $this> */
     public function project(): BelongsTo

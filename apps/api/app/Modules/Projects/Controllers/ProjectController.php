@@ -68,7 +68,7 @@ class ProjectController extends Controller
     {
         $this->authorize('view', $project);
 
-        $project->load(['lead', 'product', 'client', 'members', 'milestones', 'links']);
+        $project->load(['lead', 'product', 'client', 'members', 'milestones', 'links.author', 'notes.author', 'reports.author']);
         $project->loadCount('tasks');
 
         return response()->json([
@@ -100,7 +100,7 @@ class ProjectController extends Controller
             return $proj;
         });
 
-        $project->load(['lead', 'product', 'client', 'members', 'milestones', 'links']);
+        $project->load(['lead', 'product', 'client', 'members', 'milestones', 'links.author', 'notes.author', 'reports.author']);
 
         return response()->json([
             'message' => 'تم إنشاء المشروع بنجاح / Project created successfully',
@@ -130,7 +130,7 @@ class ProjectController extends Controller
             ]);
         });
 
-        $project->load(['lead', 'product', 'client', 'members', 'milestones', 'links']);
+        $project->load(['lead', 'product', 'client', 'members', 'milestones', 'links.author', 'notes.author', 'reports.author']);
 
         return response()->json([
             'message' => 'تم تحديث بيانات المشروع / Project updated successfully',

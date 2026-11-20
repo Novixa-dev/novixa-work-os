@@ -447,7 +447,10 @@ onMounted(async () => {
           </div>
 
           <!-- Title & Description -->
-          <h3 class="text-base font-semibold text-slate-900 dark:text-white line-clamp-1 mb-1">
+          <h3
+            class="text-base font-semibold text-slate-900 dark:text-white line-clamp-1 mb-1 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+            @click="router.push(`/projects/${project.id}`)"
+          >
             {{ locale === 'ar' ? (project.name_ar || project.name_en) : (project.name_en || project.name_ar) }}
           </h3>
           <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-3 min-h-[32px]">
@@ -552,12 +555,12 @@ onMounted(async () => {
               <Archive v-else class="w-3.5 h-3.5" />
             </button>
             <UiButton
-              variant="outline"
+              variant="primary"
               size="sm"
               class="text-xs py-1 px-2.5 h-auto flex items-center gap-1"
-              @click="navigateToTasks(project.id)"
+              @click="router.push(`/projects/${project.id}`)"
             >
-              <span>{{ locale === 'ar' ? 'المهام' : 'Tasks' }}</span>
+              <span>{{ locale === 'ar' ? 'مساحة العمل' : 'Workspace' }}</span>
               <component :is="isRtl ? ArrowLeft : ArrowRight" class="w-3 h-3" />
             </UiButton>
           </div>
@@ -618,8 +621,8 @@ onMounted(async () => {
               </td>
               <td class="py-3 px-4 text-center">
                 <div class="flex items-center justify-end gap-1">
-                  <UiButton variant="ghost" size="sm" class="h-7 px-2 text-xs" @click="navigateToTasks(project.id)">
-                    {{ locale === 'ar' ? 'المهام' : 'Tasks' }}
+                  <UiButton variant="outline" size="sm" class="h-7 px-2 text-xs flex items-center gap-1" @click="router.push(`/projects/${project.id}`)">
+                    <span>{{ locale === 'ar' ? 'عرض التفاصيل' : 'Details' }}</span>
                   </UiButton>
                 </div>
               </td>
